@@ -8,3 +8,14 @@ dist-ssr
 !.vscode/launch.json
 docs/
 docs/
+# Secrets
+server/.env
+server/.env.local
+
+# Databases & backups
+server/data/*.db
+server/data/*.sqlite
+server/data/*.bak
+server/data/*.csv
+server/data/offline.db*
+server/data/*-preserved.csv
