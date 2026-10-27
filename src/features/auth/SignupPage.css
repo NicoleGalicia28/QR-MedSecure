@@ -1,0 +1,144 @@
+/* ---------- RIGHT PANEL CONTENT ---------- */
+
+.signup-form-wrapper {
+  max-width: 520px;
+  width: 100%;
+}
+
+.signup-form__eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #0a3d3d;
+  margin-bottom: 16px;
+}
+
+.signup-form__title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.3px;
+}
+
+.signup-form__subtitle {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0 0 28px 0;
+  line-height: 1.5;
+}
+
+/* Two-column form row */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- ROLE SELECTOR ---------- */
+
+.role-group {
+  margin-bottom: 20px;
+}
+
+.role-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.role-option {
+  padding: 9px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.role-option:hover {
+  border-color: #0a3d3d;
+  color: #0a3d3d;
+}
+
+.role-option--active {
+  background: #0a3d3d;
+  border-color: #0a3d3d;
+  color: #ffffff;
+}
+
+.role-hint {
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+
+/* ---------- STATUS NOTICE BOX ---------- */
+
+.signup-notice {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: #fdf3e3;
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: #1a1a1a;
+}
+
+.signup-notice strong {
+  font-weight: 700;
+  color: #8a5a00;
+}
+
+/* ---------- AGREEMENT ---------- */
+
+.signup-agreement {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #374151;
+  margin: 20px 0 24px;
+  cursor: pointer;
+}
+
+.signup-agreement input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: #0a3d3d;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ---------- ACTION BUTTONS ---------- */
+
+.signup-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.form-submit--outline {
+  background: #ffffff;
+  color: #0a3d3d;
+  border: 1px solid #d1d5db;
+}
+
+.form-submit--outline:hover {
+  background: #f9fafb;
+  border-color: #0a3d3d;
+}

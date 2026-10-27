@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Debug React in Chrome",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}",
+      "sourceMapPathOverrides": {
+        "/src/*": "${webRoot}/src/*"
+      }
+    },
+    {
+      "type": "msedge",
+      "request": "launch",
+      "name": "Debug React in Edge",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}",
+      "sourceMapPathOverrides": {
+        "/src/*": "${webRoot}/src/*"
+      }
+    }
+  ]
+}

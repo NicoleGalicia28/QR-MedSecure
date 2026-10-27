@@ -1,0 +1,498 @@
+/* Back link */
+.dr-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0a3d3d;
+  text-decoration: none;
+  margin-bottom: 16px;
+}
+
+.dr-back:hover {
+  text-decoration: underline;
+}
+
+/* Header */
+.dr-header {
+  margin-bottom: 18px;
+}
+
+.dr-header__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.3px;
+}
+
+.dr-header__subtitle {
+  font-size: 12.5px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* ---------- SUCCESS BANNER ---------- */
+
+.dr-banner {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: #065f46;
+  line-height: 1.55;
+}
+
+.dr-banner strong {
+  font-weight: 700;
+  color: #065f46;
+}
+
+/* ---------- TWO-COLUMN LAYOUT ---------- */
+
+.dr-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .dr-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- RECEIPT PANEL ---------- */
+
+.dr-receipt {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 22px 26px;
+}
+
+.dr-receipt__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.dr-receipt__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.dr-receipt__sub {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.dr-receipt__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #065f46;
+  background: #d1fae5;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.dr-receipt__pill::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+/* ---------- RECEIPT FIELDS GRID ---------- */
+
+.dr-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 24px;
+  padding: 18px 0;
+  border-top: 1px solid #f3f4f6;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+@media (max-width: 520px) {
+  .dr-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dr-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.dr-field__label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.dr-field__value {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.4;
+  margin: 0;
+  word-break: break-word;
+}
+
+.dr-field__value--muted {
+  font-weight: 600;
+  color: #4b5563;
+}
+
+/* Transaction + timestamp row above fields */
+.dr-tx-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 16px 0;
+  border-top: 1px solid #f3f4f6;
+  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.dr-tx-row__left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dr-tx-row__label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.dr-tx-row__value {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0a3d3d;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Footer metadata */
+.dr-receipt__meta {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 18px 0 0 0;
+  line-height: 1.55;
+}
+
+/* Action buttons */
+.dr-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.dr-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.dr-btn--primary {
+  background: #0a3d3d;
+  color: #ffffff;
+}
+
+.dr-btn--primary:hover {
+  background: #0d4f4f;
+}
+
+.dr-btn--primary:disabled {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+.dr-actions__error {
+  align-self: center;
+  font-size: 11.5px;
+  color: #b91c1c;
+}
+
+.dr-btn__spin {
+  animation: dr-spin 0.9s linear infinite;
+}
+
+@keyframes dr-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dr-btn--outline {
+  background: #ffffff;
+  color: #1a1a1a;
+  border-color: #d1d5db;
+}
+
+.dr-btn--outline:hover {
+  border-color: #0a3d3d;
+  background: #f9fafb;
+}
+
+/* ---------- RIGHT COLUMN PANELS ---------- */
+
+.dr-side-panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+
+.dr-side-panel__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 14px 0;
+}
+
+.dr-alloc-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 0;
+  border-top: 1px solid #f3f4f6;
+}
+
+.dr-alloc-row:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.dr-alloc-row__label {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.dr-alloc-row__value {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.dr-alloc-row__value--muted {
+  font-weight: 600;
+  color: #4b5563;
+}
+
+/* Yellow warning box */
+.dr-warning {
+  margin-top: 16px;
+  background: #fdf3e3;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 11px;
+  color: #1a1a1a;
+  line-height: 1.55;
+}
+
+.dr-warning strong {
+  display: block;
+  color: #92400e;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* Return routes stack of buttons */
+.dr-return-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1a1a1a;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none;
+  margin-bottom: 10px;
+  transition: all 0.15s;
+}
+
+.dr-return-btn:last-child {
+  margin-bottom: 0;
+}
+
+.dr-return-btn:hover {
+  border-color: #0a3d3d;
+  background: #f9fafb;
+  color: #0a3d3d;
+}
+
+/* ---------- AUDIT FOOTER ---------- */
+
+.dr-audit {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+
+.dr-audit__label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.dr-audit__meta {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.dr-audit__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #065f46;
+  white-space: nowrap;
+}
+
+.dr-audit__status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+/* ---------- PAGE FOOTER ---------- */
+
+.dr-page-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 26px;
+  font-size: 10.5px;
+  color: #9ca3af;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- PRINT: RECEIPT ONLY ----------
+   Printing must produce the receipt card on its own — the workspace
+   sidebar, top bar, side panels and on-screen buttons are stripped away. */
+
+@media print {
+  @page {
+    size: auto;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Keep the pill / banner colours when printing. */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide the workspace chrome and every non-receipt block. */
+  .admin-sidebar,
+  .admin-topbar,
+  .dr-back,
+  .dr-header,
+  .dr-banner,
+  .dr-actions,
+  .dr-side-panel,
+  .dr-audit,
+  .dr-page-footer {
+    display: none !important;
+  }
+
+  /* Collapse the layout wrappers so the receipt owns the whole page. */
+  .admin-shell,
+  .admin-main,
+  .admin-content {
+    display: block !important;
+    min-height: 0 !important;
+    height: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    overflow: visible !important;
+  }
+
+  .dr-layout {
+    display: block !important;
+  }
+
+  /* The receipt itself: a narrow, centred slip. */
+  .dr-receipt {
+    width: 100% !important;
+    max-width: 560px !important;
+    margin: 0 auto !important;
+    padding: 24px 26px !important;
+    background: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .dr-receipt__pill,
+  .dr-warning {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .dr-fields {
+    gap: 14px 20px !important;
+  }
+}

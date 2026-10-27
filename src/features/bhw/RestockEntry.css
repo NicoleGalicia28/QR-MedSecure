@@ -1,0 +1,324 @@
+/* ============================================
+   RECORD MEDICINE RESTOCK PAGE
+   ============================================ */
+
+/* Back link */
+.restock-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0a3d3d;
+  text-decoration: none;
+  margin-bottom: 16px;
+}
+
+.restock-back:hover {
+  text-decoration: underline;
+}
+
+/* Header */
+.restock-header {
+  margin-bottom: 22px;
+}
+
+.restock-header__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.3px;
+}
+
+.restock-header__subtitle {
+  font-size: 12.5px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* ---------- TWO-COLUMN LAYOUT ---------- */
+
+.restock-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+@media (max-width: 1100px) {
+  .restock-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- LEFT: ENTRY FORM ---------- */
+
+.restock-form-panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 22px 24px;
+}
+
+.restock-form-panel__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.restock-form-panel__subtitle {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+}
+
+/* Form fields */
+.restock-field {
+  margin-bottom: 16px;
+}
+
+.restock-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 520px) {
+  .restock-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.restock-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+}
+
+.restock-label .req {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+.restock-input,
+.restock-select,
+.restock-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: #1a1a1a;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.restock-textarea {
+  resize: vertical;
+  min-height: 60px;
+  line-height: 1.5;
+}
+
+.restock-input:focus,
+.restock-select:focus,
+.restock-textarea:focus {
+  border-color: #0a3d3d;
+  box-shadow: 0 0 0 3px rgba(10, 61, 61, 0.08);
+}
+
+/* Read-only */
+.restock-readonly {
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: #4b5563;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+/* Helper text under form */
+.restock-helper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 18px 0 16px 0;
+  line-height: 1.5;
+}
+
+.restock-helper svg {
+  flex-shrink: 0;
+  color: #0a3d3d;
+}
+
+/* Action buttons (base .btn styles live in BhwButtons.css) */
+.restock-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ---------- RIGHT: IMPACT + AUDIT ---------- */
+
+.restock-side-panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+
+.restock-side-panel__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.restock-side-panel__subtitle {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0 0 16px 0;
+  line-height: 1.5;
+}
+
+/* Impact list */
+.impact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.impact-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 12px;
+}
+
+.impact-row__label {
+  color: #6b7280;
+}
+
+.impact-row__value {
+  color: #1a1a1a;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.impact-row__value--highlight {
+  color: #0a3d3d;
+  font-weight: 700;
+}
+
+/* Warning note */
+.impact-note {
+  margin-top: 16px;
+  background: #fdf3e3;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 11px;
+  color: #1a1a1a;
+  line-height: 1.55;
+}
+
+.impact-note strong {
+  color: #92400e;
+  font-weight: 700;
+}
+
+/* Save confirmation card */
+.saved-card {
+  margin-top: 4px;
+}
+
+.saved-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #065f46;
+  margin-bottom: 14px;
+}
+
+.saved-card__badge::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+.saved-card__info {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0 0 12px 0;
+}
+
+.saved-card__success {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 11.5px;
+  color: #065f46;
+  line-height: 1.55;
+  margin-bottom: 14px;
+}
+
+.saved-card__success strong {
+  font-weight: 700;
+  color: #065f46;
+}
+
+.saved-card__audit-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.saved-card__audit-meta {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 0 0 16px 0;
+}
+
+.saved-card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ---------- EMPTY PLACEHOLDER (before any input) ---------- */
+
+.restock-placeholder {
+  font-size: 11.5px;
+  color: #9ca3af;
+  text-align: center;
+  padding: 20px 0;
+  line-height: 1.6;
+}
+
+/* ---------- PAGE FOOTER ---------- */
+
+.restock-page-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  font-size: 10.5px;
+  color: #9ca3af;
+  flex-wrap: wrap;
+  gap: 8px;
+}

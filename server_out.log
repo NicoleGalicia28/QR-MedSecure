@@ -1,0 +1,15 @@
+[API] http://localhost:5000/api
+[0mGET /api/machine [33m401[0m 2.952 ms - 24[0m
+[0mGET /api/machine/TY-DM-01/events [33m401[0m 2.105 ms - 24[0m
+[0mGET /api/machine [33m401[0m 1.211 ms - 24[0m
+[0mGET /api/machine/TY-DM-01/events [33m401[0m 0.335 ms - 24[0m
+[0mGET /api/machine [33m401[0m 0.372 ms - 24[0m
+[0mGET /api/machine/TY-DM-01/events [33m401[0m 0.289 ms - 24[0m
+[0mGET /api/machine/TY-DM-01/events [33m401[0m 0.333 ms - 24[0m
+[0mGET /api/machine [33m401[0m 0.315 ms - 24[0m
+[0mGET /api/machine [33m401[0m 0.458 ms - 24[0m
+[0mGET /api/machine/TY-DM-01/events [33m401[0m 0.289 ms - 24[0m
+[0mGET /api/machine [33m401[0m 0.306 ms - 24[0m
+[0mGET /api/machine/TY-DM-01/events [33m401[0m 0.444 ms - 24[0m
+[0mGET /api/machine [33m401[0m 0.234 ms - 24[0m
+[0mGET /api/machine/TY-DM-01/events [33m401[0m 0.259 ms - 24[0m

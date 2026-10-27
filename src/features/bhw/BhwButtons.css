@@ -1,0 +1,49 @@
+/* Shared button utilities for the BHW workspace.
+   Kept in its own file so every page that uses these classes gets them,
+   instead of depending on which page happens to import the other's CSS. */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.btn--primary {
+  background: #0a3d3d;
+  color: #ffffff;
+}
+
+.btn--primary:hover {
+  background: #0d4f4f;
+}
+
+.btn--sm {
+  padding: 7px 14px;
+  font-size: 11.5px;
+  gap: 6px;
+}
+
+.btn--outline {
+  background: #ffffff;
+  color: #0a3d3d;
+  border-color: #d1d5db;
+}
+
+.btn--outline:hover {
+  border-color: #0a3d3d;
+  background: #f9fafb;
+}
+
+.btn--block {
+  width: 100%;
+}

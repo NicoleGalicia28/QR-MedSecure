@@ -1,0 +1,73 @@
+[DB] Connection error 
+[DB] Sync warning: 
+[DB] Could not normalise clinical record status: 
+C:\Users\carlg\OneDrive\Desktop\QR-MedSecure\server\node_modules\sequelize\lib\dialects\mysql\connection-manager.js:92
+          throw new SequelizeErrors.ConnectionRefusedError(err);
+                ^
+
+ConnectionRefusedError [SequelizeConnectionRefusedError]
+    at ConnectionManager.connect (C:\Users\carlg\OneDrive\Desktop\QR-MedSecure\server\node_modules\sequelize\lib\dialects\mysql\connection-manager.js:92:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async ConnectionManager._connect (C:\Users\carlg\OneDrive\Desktop\QR-MedSecure\server\node_modules\sequelize\lib\dialects\abstract\connection-manager.js:222:24)
+    at async C:\Users\carlg\OneDrive\Desktop\QR-MedSecure\server\node_modules\sequelize\lib\dialects\abstract\connection-manager.js:174:32
+    at async ConnectionManager.getConnection (C:\Users\carlg\OneDrive\Desktop\QR-MedSecure\server\node_modules\sequelize\lib\dialects\abstract\connection-manager.js:197:7)
+    at async C:\Users\carlg\OneDrive\Desktop\QR-MedSecure\server\node_modules\sequelize\lib\sequelize.js:305:26
+    at async MySQLQueryInterface.select (C:\Users\carlg\OneDrive\Desktop\QR-MedSecure\server\node_modules\sequelize\lib\dialects\abstract\query-interface.js:407:12)
+    at async User.findAll (C:\Users\carlg\OneDrive\Desktop\QR-MedSecure\server\node_modules\sequelize\lib\model.js:1140:21)
+    at async User.findOne (C:\Users\carlg\OneDrive\Desktop\QR-MedSecure\server\node_modules\sequelize\lib\model.js:1240:12)
+    at async login (file:///C:/Users/carlg/OneDrive/Desktop/QR-MedSecure/server/src/controllers/authController.js:62:16) {
+  parent: AggregateError [ECONNREFUSED]: 
+      at internalConnectMultiple (node:net:1339:18)
+      at afterConnectMultiple (node:net:1942:7) {
+    code: 'ECONNREFUSED',
+    fatal: true,
+    [errors]: [
+      Error: connect ECONNREFUSED ::1:3306
+          at createConnectionError (node:net:1905:14)
+          at afterConnectMultiple (node:net:1935:16) {
+        errno: -4078,
+        code: 'ECONNREFUSED',
+        syscall: 'connect',
+        address: '::1',
+        port: 3306
+      },
+      Error: connect ECONNREFUSED 127.0.0.1:3306
+          at createConnectionError (node:net:1905:14)
+          at afterConnectMultiple (node:net:1935:16) {
+        errno: -4078,
+        code: 'ECONNREFUSED',
+        syscall: 'connect',
+        address: '127.0.0.1',
+        port: 3306
+      }
+    ]
+  },
+  original: AggregateError [ECONNREFUSED]: 
+      at internalConnectMultiple (node:net:1339:18)
+      at afterConnectMultiple (node:net:1942:7) {
+    code: 'ECONNREFUSED',
+    fatal: true,
+    [errors]: [
+      Error: connect ECONNREFUSED ::1:3306
+          at createConnectionError (node:net:1905:14)
+          at afterConnectMultiple (node:net:1935:16) {
+        errno: -4078,
+        code: 'ECONNREFUSED',
+        syscall: 'connect',
+        address: '::1',
+        port: 3306
+      },
+      Error: connect ECONNREFUSED 127.0.0.1:3306
+          at createConnectionError (node:net:1905:14)
+          at afterConnectMultiple (node:net:1935:16) {
+        errno: -4078,
+        code: 'ECONNREFUSED',
+        syscall: 'connect',
+        address: '127.0.0.1',
+        port: 3306
+      }
+    ]
+  }
+}
+
+Node.js v24.19.0

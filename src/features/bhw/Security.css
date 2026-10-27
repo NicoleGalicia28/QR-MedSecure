@@ -1,0 +1,373 @@
+/* Back link */
+.sec-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0a3d3d;
+  text-decoration: none;
+  margin-bottom: 16px;
+}
+
+.sec-back:hover {
+  text-decoration: underline;
+}
+
+/* Header */
+.sec-header {
+  margin-bottom: 20px;
+}
+
+.sec-header__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.3px;
+}
+
+.sec-header__subtitle {
+  font-size: 12.5px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* ---------- TABS ---------- */
+
+.sec-tabs {
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 20px;
+}
+
+.sec-tab {
+  padding: 10px 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font-family: inherit;
+  transition: color 0.15s;
+  text-decoration: none;
+}
+
+.sec-tab:hover {
+  color: #0a3d3d;
+}
+
+.sec-tab--active {
+  color: #0a3d3d;
+  border-bottom-color: #0a3d3d;
+}
+
+/* ---------- LAYOUT ---------- */
+
+.sec-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .sec-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Panels */
+.sec-panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 22px 24px;
+  margin-bottom: 16px;
+}
+
+.sec-panel__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.sec-panel__subtitle {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+}
+
+/* Fields */
+.sec-field {
+  margin-bottom: 16px;
+}
+
+.sec-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+}
+
+.sec-label .req {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+.sec-input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: #1a1a1a;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.sec-input:focus {
+  border-color: #0a3d3d;
+  box-shadow: 0 0 0 3px rgba(10, 61, 61, 0.08);
+}
+
+/* Helper line */
+.sec-helper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 8px 0 20px 0;
+  line-height: 1.5;
+}
+
+.sec-helper svg {
+  flex-shrink: 0;
+  color: #0a3d3d;
+}
+
+/* Actions */
+.sec-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sec-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.sec-btn--primary {
+  background: #0a3d3d;
+  color: #ffffff;
+}
+
+.sec-btn--primary:hover {
+  background: #0d4f4f;
+}
+
+.sec-btn--outline {
+  background: #ffffff;
+  color: #1a1a1a;
+  border-color: #d1d5db;
+}
+
+.sec-btn--outline:hover {
+  border-color: #0a3d3d;
+  background: #f9fafb;
+}
+
+/* ---------- RECENT SIGN-INS ---------- */
+
+.sec-signin-item {
+  padding: 14px 0;
+  border-top: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.sec-signin-item:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.sec-signin__title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.sec-signin__meta {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.sec-signin__tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.sec-signin__tag--current {
+  color: #0a3d3d;
+}
+
+.sec-signin__tag--ended {
+  color: #6b7280;
+}
+
+/* ---------- RIGHT: ACCOUNT PROTECTION ---------- */
+
+.sec-acct-row {
+  padding: 10px 0;
+  border-top: 1px solid #f3f4f6;
+}
+
+.sec-acct-row:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.sec-acct__label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #6b7280;
+  margin: 0 0 4px 0;
+}
+
+.sec-acct__value {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Checkbox row */
+.sec-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #374151;
+  cursor: pointer;
+  padding: 12px 0;
+  border-top: 1px solid #f3f4f6;
+  border-bottom: 1px solid #f3f4f6;
+  margin: 12px 0;
+}
+
+.sec-check input[type="checkbox"] {
+  accent-color: #0a3d3d;
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.sec-acct__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0a3d3d;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.sec-acct__btn:hover {
+  border-color: #0a3d3d;
+  background: #f9fafb;
+}
+
+/* Blue info note */
+.sec-info {
+  background: #eaf4f4;
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 11.5px;
+  color: #1a1a1a;
+  line-height: 1.55;
+  margin-top: 14px;
+}
+
+.sec-info strong {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #0a3d3d;
+}
+
+/* ---------- RIGHT: SUCCESS CARD ---------- */
+
+.sec-success {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 11.5px;
+  color: #065f46;
+  line-height: 1.55;
+  margin-bottom: 14px;
+}
+
+.sec-success strong {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #065f46;
+}
+
+/* ---------- PAGE FOOTER ---------- */
+
+.sec-page-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 26px;
+  font-size: 10.5px;
+  color: #9ca3af;
+  flex-wrap: wrap;
+  gap: 8px;
+}

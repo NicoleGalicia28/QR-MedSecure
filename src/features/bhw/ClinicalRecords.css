@@ -1,0 +1,340 @@
+/* Back link */
+.cr-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0a3d3d;
+  text-decoration: none;
+  margin-bottom: 16px;
+}
+
+.cr-back:hover {
+  text-decoration: underline;
+}
+
+/* Header */
+.cr-header {
+  margin-bottom: 20px;
+}
+
+.cr-header__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.3px;
+}
+
+.cr-header__subtitle {
+  font-size: 12.5px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* ---------- MAIN PANEL ---------- */
+
+.cr-panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 22px 24px;
+  margin-bottom: 20px;
+}
+
+.cr-panel__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.cr-panel__subtitle {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+}
+
+/* Filters row */
+.cr-filters {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.2fr 1.2fr;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 1024px) {
+  .cr-filters {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .cr-filters {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cr-filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.cr-filter-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+}
+
+.cr-filter-input,
+.cr-filter-select {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 12.5px;
+  color: #1a1a1a;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.cr-filter-input:focus,
+.cr-filter-select:focus {
+  border-color: #0a3d3d;
+  box-shadow: 0 0 0 3px rgba(10, 61, 61, 0.08);
+}
+
+/* ---------- TABLE ---------- */
+
+.cr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.cr-table thead th {
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #6b7280;
+  padding: 10px 12px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+.cr-table tbody td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #1a1a1a;
+  vertical-align: middle;
+}
+
+.cr-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.cr-table__name {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.cr-table__id {
+  font-variant-numeric: tabular-nums;
+  color: #4b5563;
+}
+
+.cr-table__action {
+  color: #0a3d3d;
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cr-table__action:hover {
+  text-decoration: underline;
+}
+
+/* Status pills */
+.cr-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.cr-pill--active {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.cr-pill--archived {
+  background: #e5e7eb;
+  color: #4b5563;
+}
+
+/* Table footer */
+.cr-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  font-size: 11px;
+  color: #9ca3af;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cr-footer__pagination {
+  display: flex;
+  gap: 6px;
+}
+
+.cr-footer__pagination button {
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  font-size: 11px;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.cr-footer__pagination button:hover {
+  border-color: #0a3d3d;
+  color: #0a3d3d;
+}
+
+/* ---------- SHARED LIST HELPERS ----------
+   Used by the beneficiary list, the clinical records list and the beneficiary
+   detail page. */
+
+.cr-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #0a3d3d;
+  font-weight: 600;
+  font-size: 12px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.cr-action:hover {
+  text-decoration: underline;
+}
+
+.cr-id {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #1a1a1a;
+}
+
+.cr-patient__name {
+  font-weight: 600;
+  color: #1a1a1a;
+  text-decoration: none;
+}
+
+.cr-patient__name:hover {
+  color: #0a3d3d;
+  text-decoration: underline;
+}
+
+.cr-patient__sub {
+  color: #6b7280;
+  font-size: 11.5px;
+}
+
+.cr-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: #fff;
+  min-width: 280px;
+}
+
+.cr-search input {
+  border: none;
+  outline: none;
+  font-size: 13px;
+  width: 100%;
+  font-family: inherit;
+  color: #1a1a1a;
+}
+
+/* Active deep-link filter (e.g. ?beneficiaryId=BEN-0452) */
+.cr-active-filter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: #eaf4f4;
+  border: 1px solid #cfe4e4;
+  border-radius: 8px;
+  padding: 9px 13px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  color: #0a3d3d;
+}
+
+.cr-active-filter button {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0a3d3d;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* ---------- BHW CLINICAL ACCESS NOTE ---------- */
+.cr-access-note {
+  background: #eaf4f4;
+  border-radius: 8px;
+  padding: 14px 20px;
+  font-size: 11.5px;
+  color: #1a1a1a;
+  line-height: 1.55;
+  margin-bottom: 20px;
+}
+
+.cr-access-note strong {
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+  color: #0a3d3d;
+}
+
+/* ---------- PAGE FOOTER ---------- */
+
+.cr-page-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  font-size: 10.5px;
+  color: #9ca3af;
+  flex-wrap: wrap;
+  gap: 8px;
+}

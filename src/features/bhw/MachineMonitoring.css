@@ -1,0 +1,376 @@
+/* Header */
+.mm-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.mm-header__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.3px;
+}
+
+.mm-header__subtitle {
+  font-size: 12.5px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.55;
+}
+
+.mm-log-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #0a3d3d;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.mm-log-btn:hover {
+  background: #0d4f4f;
+}
+
+/* ---------- INFO BANNER ---------- */
+
+.mm-info-banner {
+  background: #eaf4f4;
+  border-radius: 8px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  font-size: 11.5px;
+  color: #1a1a1a;
+  line-height: 1.55;
+}
+
+.mm-info-banner strong {
+  font-weight: 700;
+  color: #0a3d3d;
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* ---------- KPI GRID (3 cards) ---------- */
+
+.mm-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 1024px) {
+  .mm-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .mm-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.mm-kpi {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+
+.mm-kpi__label {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0 0 10px 0;
+  font-weight: 500;
+}
+
+.mm-kpi__value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.4px;
+}
+
+.mm-kpi__value--healthy {
+  color: #065f46;
+}
+
+.mm-kpi__value--warn {
+  color: #92400e;
+}
+
+.mm-kpi__hint {
+  font-size: 10.5px;
+  color: #9ca3af;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ---------- TWO-COLUMN LAYOUT ---------- */
+
+.mm-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .mm-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- PANELS ---------- */
+
+.mm-panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+
+.mm-panel__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.mm-panel__subtitle {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0 0 18px 0;
+  line-height: 1.5;
+}
+
+/* ---------- SLOT STOCK TABLE ---------- */
+
+.mm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.mm-table thead th {
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #6b7280;
+  padding: 10px 12px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+.mm-table tbody td {
+  padding: 13px 12px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #1a1a1a;
+  vertical-align: middle;
+}
+
+.mm-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.mm-table__slot {
+  font-weight: 700;
+  color: #0a3d3d;
+  font-variant-numeric: tabular-nums;
+}
+
+.mm-table__med {
+  font-weight: 600;
+}
+
+/* Condition pills */
+.mm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.mm-pill--ready {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.mm-pill--refill {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Table footer */
+.mm-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  font-size: 11px;
+  color: #9ca3af;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mm-pagination {
+  display: flex;
+  gap: 6px;
+}
+
+.mm-pagination button {
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  font-size: 11px;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.mm-pagination button:hover {
+  border-color: #0a3d3d;
+  color: #0a3d3d;
+}
+
+/* ---------- UPDATE & MAINTENANCE HISTORY ---------- */
+
+.mm-history-item {
+  padding: 14px 0;
+  border-top: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.mm-history-item:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.mm-history-item__title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.mm-history-item__meta {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.mm-history-item__tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #0a3d3d;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ---------- RIGHT SIDEBAR: DEVICE DETAILS ---------- */
+
+.mm-detail-row {
+  padding: 10px 0;
+  border-top: 1px solid #f3f4f6;
+}
+
+.mm-detail-row:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.mm-detail__label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #6b7280;
+  margin: 0 0 4px 0;
+}
+
+.mm-detail__value {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.mm-detail__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0a3d3d;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none;
+  margin-top: 14px;
+  transition: all 0.15s;
+}
+
+.mm-detail__btn:hover {
+  border-color: #0a3d3d;
+  background: #f9fafb;
+}
+
+/* Yellow warning box */
+.mm-warning {
+  margin-top: 16px;
+  background: #fdf3e3;
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 11px;
+  color: #1a1a1a;
+  line-height: 1.55;
+}
+
+.mm-warning strong {
+  display: block;
+  color: #92400e;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+/* ---------- PAGE FOOTER ---------- */
+
+.mm-page-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 26px;
+  font-size: 10.5px;
+  color: #9ca3af;
+  flex-wrap: wrap;
+  gap: 8px;
+}

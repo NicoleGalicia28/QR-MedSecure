@@ -1,0 +1,279 @@
+/* Back link */
+.ep-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0a3d3d;
+  text-decoration: none;
+  margin-bottom: 16px;
+}
+
+.ep-back:hover {
+  text-decoration: underline;
+}
+
+/* Header */
+.ep-header {
+  margin-bottom: 22px;
+}
+
+.ep-header__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.3px;
+}
+
+.ep-header__subtitle {
+  font-size: 12.5px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* Two-column layout */
+.ep-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .ep-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Panels */
+.ep-panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 22px 24px;
+  margin-bottom: 16px;
+}
+
+.ep-panel__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.ep-panel__subtitle {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+}
+
+/* Fields */
+.ep-field {
+  margin-bottom: 16px;
+}
+
+.ep-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 520px) {
+  .ep-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ep-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+}
+
+.ep-label .req {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+.ep-input,
+.ep-select,
+.ep-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: #1a1a1a;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ep-textarea {
+  resize: vertical;
+  min-height: 60px;
+  line-height: 1.5;
+}
+
+.ep-input:focus,
+.ep-select:focus,
+.ep-textarea:focus {
+  border-color: #0a3d3d;
+  box-shadow: 0 0 0 3px rgba(10, 61, 61, 0.08);
+}
+
+/* Email hint */
+.ep-hint {
+  font-size: 11px;
+  color: #9ca3af;
+  margin: 6px 0 0 0;
+  line-height: 1.5;
+}
+
+/* Read-only display for role fields */
+.ep-readonly {
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: #4b5563;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+/* Action buttons */
+.ep-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.ep-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.ep-btn--primary {
+  background: #0a3d3d;
+  color: #ffffff;
+}
+
+.ep-btn--primary:hover {
+  background: #0d4f4f;
+}
+
+.ep-btn--outline {
+  background: #ffffff;
+  color: #1a1a1a;
+  border-color: #d1d5db;
+}
+
+.ep-btn--outline:hover {
+  border-color: #0a3d3d;
+  background: #f9fafb;
+}
+
+/* ---------- RIGHT: ASSIGNED ACCOUNT ---------- */
+
+.ep-acct-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #065f46;
+  background: #d1fae5;
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.ep-acct-status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+.ep-acct-row {
+  padding: 10px 0;
+  border-top: 1px solid #f3f4f6;
+}
+
+.ep-acct-row:first-of-type {
+  border-top: 1px solid #f3f4f6;
+  margin-top: 8px;
+}
+
+.ep-acct__label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #6b7280;
+  margin: 0 0 4px 0;
+}
+
+.ep-acct__value {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.ep-acct-note {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #f3f4f6;
+  font-size: 10.5px;
+  color: #9ca3af;
+  line-height: 1.55;
+}
+
+/* Blue privacy note */
+.ep-privacy {
+  background: #eaf4f4;
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 11.5px;
+  color: #1a1a1a;
+  line-height: 1.55;
+}
+
+.ep-privacy strong {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #0a3d3d;
+}
+
+/* ---------- PAGE FOOTER ---------- */
+
+.ep-page-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 26px;
+  font-size: 10.5px;
+  color: #9ca3af;
+  flex-wrap: wrap;
+  gap: 8px;
+}

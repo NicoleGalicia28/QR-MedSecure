@@ -1,0 +1,414 @@
+/* Back link */
+.ad-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0a3d3d;
+  text-decoration: none;
+  margin-bottom: 16px;
+}
+
+.ad-back:hover {
+  text-decoration: underline;
+}
+
+/* Header */
+.ad-header {
+  margin-bottom: 22px;
+}
+
+.ad-header__title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.3px;
+}
+
+.ad-header__subtitle {
+  font-size: 12.5px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* ---------- TWO-COLUMN LAYOUT ---------- */
+
+.ad-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .ad-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Panel base */
+.ad-panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 22px 24px;
+  margin-bottom: 16px;
+}
+
+.ad-panel__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.ad-panel__subtitle {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0 0 18px 0;
+  line-height: 1.5;
+}
+
+/* ---------- RESTOCKING REQUIRED PANEL ---------- */
+
+.ad-action-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #92400e;
+  background: #fef3c7;
+  padding: 3px 9px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+
+.ad-med-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 24px;
+  padding: 16px 0;
+  border-top: 1px solid #f3f4f6;
+  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 520px) {
+  .ad-med-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ad-med-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.ad-med__name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.ad-med__meta {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.ad-machine-note {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 14px;
+  border-top: 1px solid #f3f4f6;
+  margin-top: 6px;
+}
+
+.ad-machine-note__title {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.ad-machine-note__desc {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.ad-description {
+  font-size: 12.5px;
+  color: #374151;
+  line-height: 1.55;
+  margin: 0 0 18px 0;
+}
+
+/* Actions */
+.ad-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ad-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.ad-btn--primary {
+  background: #0a3d3d;
+  color: #ffffff;
+}
+
+.ad-btn--primary:hover {
+  background: #0d4f4f;
+}
+
+.ad-btn--outline {
+  background: #ffffff;
+  color: #1a1a1a;
+  border-color: #d1d5db;
+}
+
+.ad-btn--outline:hover {
+  border-color: #0a3d3d;
+  background: #f9fafb;
+}
+
+/* ---------- ALLOCATION UPDATE PANEL ---------- */
+
+.ad-alloc-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid #f3f4f6;
+  flex-wrap: wrap;
+}
+
+.ad-alloc-row:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ad-alloc__title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.ad-alloc__meta {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.ad-alloc__tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #0a3d3d;
+  white-space: nowrap;
+}
+
+.ad-ack-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #374151;
+  padding: 12px 0 0 0;
+  border-top: 1px solid #f3f4f6;
+  margin-top: 12px;
+}
+
+.ad-ack-row svg {
+  color: #0a3d3d;
+  flex-shrink: 0;
+}
+
+.ad-ack-by {
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+  margin-top: 12px;
+}
+
+.ad-ack-by__label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.ad-ack-by__meta {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* ---------- ACKNOWLEDGE FORM ---------- */
+
+.ad-form-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 6px;
+}
+
+.ad-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  color: #1a1a1a;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  outline: none;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 76px;
+  line-height: 1.5;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.ad-textarea:focus {
+  border-color: #0a3d3d;
+  box-shadow: 0 0 0 3px rgba(10, 61, 61, 0.08);
+}
+
+.ad-form-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.ad-form-note {
+  font-size: 11px;
+  color: #9ca3af;
+  line-height: 1.55;
+  margin: 14px 0 0 0;
+}
+
+/* ---------- RIGHT: ALERT TIMELINE ---------- */
+
+.ad-timeline-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 12px 0;
+  border-top: 1px solid #f3f4f6;
+}
+
+.ad-timeline-item:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.ad-timeline__title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.ad-timeline__meta {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.ad-timeline__tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ad-timeline__tag--open {
+  color: #92400e;
+}
+
+.ad-timeline__tag--assigned {
+  color: #1e40af;
+}
+
+/* ---------- RIGHT: ROLE-AWARE NOTE ---------- */
+
+.ad-role-note {
+  background: #eaf4f4;
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 11.5px;
+  color: #1a1a1a;
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+.ad-role-note strong {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #0a3d3d;
+}
+
+.ad-pref-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0a3d3d;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.ad-pref-btn:hover {
+  border-color: #0a3d3d;
+  background: #f9fafb;
+}
+
+/* ---------- PAGE FOOTER ---------- */
+
+.ad-page-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 26px;
+  font-size: 10.5px;
+  color: #9ca3af;
+  flex-wrap: wrap;
+  gap: 8px;
+}

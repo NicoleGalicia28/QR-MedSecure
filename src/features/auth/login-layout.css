@@ -1,0 +1,56 @@
+.auth-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #2b2b2b;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.auth-layout__container {
+  display: flex;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: #ffffff;
+  overflow: hidden;
+  min-height: calc(100vh - 80px);
+}
+
+/* LEFT PANEL - Brand side */
+.auth-layout__left {
+  flex: 0 0 38%;
+  background-color: #0a3d3d;
+  color: #ffffff;
+  padding: 48px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* RIGHT PANEL - Form side */
+.auth-layout__right {
+  flex: 1;
+  background-color: #ffffff;
+  padding: 64px 96px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+  .auth-layout {
+    padding: 0;
+  }
+  .auth-layout__container {
+    flex-direction: column;
+  }
+  .auth-layout__left {
+    flex: 0 0 auto;
+    padding: 32px 24px;
+  }
+  .auth-layout__right {
+    padding: 40px 24px;
+  }
+}

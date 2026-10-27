@@ -1,0 +1,87 @@
+.qms-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 24px;
+  text-align: center;
+  color: #64748b;
+}
+
+.qms-state__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.qms-state__message {
+  font-size: 13px;
+  color: #64748b;
+  max-width: 420px;
+  line-height: 1.5;
+}
+
+.qms-state__icon {
+  color: #94a3b8;
+}
+
+.qms-state--error .qms-state__icon {
+  color: #dc2626;
+}
+
+.qms-state__spin {
+  animation: qms-spin 0.9s linear infinite;
+  color: #2563eb;
+}
+
+.qms-state__retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 7px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+}
+
+.qms-state__retry:hover {
+  background: #f1f5f9;
+}
+
+@keyframes qms-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.qms-notice {
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 8px 0;
+}
+
+.qms-notice--info {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+}
+
+.qms-notice--success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+}
+
+.qms-notice--error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}

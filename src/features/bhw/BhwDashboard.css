@@ -1,0 +1,124 @@
+/* Restock banner */
+.bhw-restock-banner {
+  background: #fdf3e3;
+  border-radius: 8px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: #1a1a1a;
+  line-height: 1.55;
+}
+
+.bhw-restock-banner strong {
+  color: #92400e;
+  font-weight: 700;
+}
+
+/* Header action button (Scan & dispense) */
+.bhw-scan-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #0a3d3d;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.bhw-scan-btn:hover {
+  background: #0d4f4f;
+}
+
+/* Machine status card */
+.machine-status__device {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 10px 0;
+}
+
+.machine-status__row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 11.5px;
+  color: #4b5563;
+}
+
+.machine-status__row strong {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.machine-status__healthy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #065f46;
+  margin-bottom: 12px;
+}
+
+.machine-status__healthy::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+/* Quick task shortcuts row */
+.task-shortcuts {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.task-shortcut-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.task-shortcut-btn:hover {
+  border-color: #0a3d3d;
+  color: #0a3d3d;
+}
+
+/* ---------- BENEFICIARY PANEL ---------- */
+
+/* Beneficiary name in the dashboard table is a link, not plain text. */
+a.rec-table__name {
+  color: #1a1a1a;
+  text-decoration: none;
+}
+
+a.rec-table__name:hover {
+  color: #0a3d3d;
+  text-decoration: underline;
+}
+
+/* Secondary line under the name — the beneficiary public ID. */
+.rec-table__sub {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}

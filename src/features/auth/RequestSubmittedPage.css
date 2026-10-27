@@ -1,0 +1,272 @@
+.request-wrapper {
+  max-width: 560px;
+  width: 100%;
+}
+
+/* Top back link */
+.request-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0a3d3d;
+  text-decoration: none;
+  margin-bottom: 22px;
+}
+
+.request-back:hover {
+  text-decoration: underline;
+}
+
+/* Eyebrow + title */
+.request-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #0a3d3d;
+  margin-bottom: 12px;
+}
+
+.request-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.3px;
+}
+
+.request-subtitle {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.55;
+  margin: 0 0 28px 0;
+}
+
+/* ---------- SUMMARY CARD ---------- */
+
+.request-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 22px 26px;
+  background: #ffffff;
+}
+
+.request-card__header {
+  margin-bottom: 20px;
+}
+
+.request-card__name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+}
+
+.request-card__meta {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.request-card__meta .dot {
+  color: #d1d5db;
+}
+
+/* Rows */
+.request-row {
+  padding: 14px 0;
+  border-top: 1px solid #f3f4f6;
+}
+
+.request-row__label {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0 0 4px 0;
+}
+
+.request-row__value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  word-break: break-word;
+}
+
+/* Status rows (with badge on right) */
+.request-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 0;
+  border-top: 1px solid #f3f4f6;
+}
+
+.request-status-row__left {
+  flex: 1;
+}
+
+.request-status-row__title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.request-status-row__desc {
+  font-size: 11.5px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Badges */
+.badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.badge--pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge--submitted {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badge--blocked {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Top pending badge inside header */
+.request-card__status {
+  display: inline-block;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #92400e;
+  background: #fef3c7;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+
+.request-card__status.is-approved {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.request-card__status.is-rejected {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+/* Green "approved / allowed" badge */
+.badge--success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* ---------- INFO BOX ---------- */
+
+.request-info-box {
+  margin-top: 20px;
+  background: #eaf4f4;
+  border-radius: 8px;
+  padding: 16px 20px;
+}
+
+.request-info-box__title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 6px 0;
+}
+
+.request-info-box__text {
+  font-size: 11.5px;
+  color: #4b5563;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ---------- ACTION BUTTONS ---------- */
+
+.request-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.request-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 11px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s;
+  font-family: inherit;
+  border: 1px solid transparent;
+}
+
+.request-btn--primary {
+  background: #0a3d3d;
+  color: #ffffff;
+}
+
+.request-btn--primary:hover {
+  background: #0d4f4f;
+}
+
+.request-btn--outline {
+  background: #ffffff;
+  color: #0a3d3d;
+  border-color: #d1d5db;
+}
+
+.request-btn--outline:hover {
+  border-color: #0a3d3d;
+  background: #f9fafb;
+}
+
+/* ---------- FOOTER TEXT ---------- */
+
+.request-footer {
+  margin-top: 22px;
+  font-size: 11.5px;
+  color: #6b7280;
+  line-height: 1.7;
+}
+
+.request-footer a {
+  color: #0a3d3d;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.request-footer a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- LEFT PANEL CARD (optional variation) ---------- */
+
+.login-steps__caption--center {
+  text-align: left;
+}
