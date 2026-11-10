@@ -44,7 +44,8 @@ export default function MachineMonitoringPage() {
     setCmd((c) => ({ ...c, sending: true, message: null }));
     try {
       const res = await iotApi.sendCommand({
-        machine_id: machineCode || IOT_MACHINE_ID,
+        // Must match the firmware's machineId (MSv1M-001), not the Express device code.
+        machine_id: IOT_MACHINE_ID,
         command_type: cmd.type,
         motor_channel: Number(cmd.channel) || 1,
         parameters: null,
@@ -54,7 +55,7 @@ export default function MachineMonitoringPage() {
     } catch (e) {
       setCmd((c) => ({ ...c, sending: false, message: `Error: ${e.message}` }));
     }
-  }, [cmd.type, cmd.channel, machineCode, refreshIot]);
+  }, [cmd.type, cmd.channel, refreshIot]);
 
   const refreshAll = useCallback(() => {
     machineQuery.refetch();
@@ -234,7 +235,7 @@ export default function MachineMonitoringPage() {
                 <h2 className="mm-panel__title">IoT Device API (ESP32)</h2>
                 <p className="mm-panel__subtitle">
                   Connected to Django IoT service for machine inventory, command queue, and ESP32 polling.
-                  Machine ID: <strong>{machineCode || IOT_MACHINE_ID}</strong>
+                  Machine ID: <strong>{IOT_MACHINE_ID}</strong> (must match the ESP32 firmware)
                 </p>
 
                 {!IOT_CONFIGURED ? (

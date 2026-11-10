@@ -5,7 +5,7 @@
 const IOT_BASE = (import.meta.env.VITE_IOT_API_URL || "http://localhost:8000").replace(/\/$/, "");
 const IOT_API = `${IOT_BASE}/api/v1`;
 const IOT_KEY = import.meta.env.VITE_IOT_API_KEY || "";
-export const IOT_MACHINE_ID = import.meta.env.VITE_IOT_MACHINE_ID || "MED-001";
+export const IOT_MACHINE_ID = import.meta.env.VITE_IOT_MACHINE_ID || "MSv1M-001";
 
 export const IOT_CONFIGURED = Boolean(IOT_BASE && IOT_KEY);
 

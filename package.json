@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "iot:bridge": "node --env-file-if-exists=.env scripts/iot-bridge.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.104.4",
