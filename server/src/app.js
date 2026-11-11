@@ -19,10 +19,32 @@ import dataRoutes from "./routes/data.js";
 const app = express();
 const PORT = process.env.PORT || 5000;
 const API_PREFIX = process.env.API_PREFIX || "/api";
-const CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:5173";
+const CORS_ORIGINS = (process.env.CORS_ORIGIN || "http://localhost:5173")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+// Also accept the app when it is opened from another device on the same
+// network (phone/tablet), e.g. http://192.168.1.9:5173. Only loopback and
+// private LAN addresses are allowed, so this does not expose the API to
+// the public internet.
+const LAN_ORIGIN =
+  /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\]|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})(:\d+)?$/;
 
 app.use(helmet());
-app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
+app.use(
+  cors({
+    origin(origin, callback) {
+      // No Origin header: curl, same-origin requests, mobile WebViews.
+      if (!origin) return callback(null, true);
+      if (CORS_ORIGINS.includes(origin) || LAN_ORIGIN.test(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
+    credentials: true,
+  })
+);
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));

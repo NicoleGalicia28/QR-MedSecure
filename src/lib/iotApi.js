@@ -2,7 +2,12 @@
 // This runs alongside the main Express backend and is used for ESP32
 // inventory, command queue, polling, and machine logs.
 
-const IOT_BASE = (import.meta.env.VITE_IOT_API_URL || "http://localhost:8000").replace(/\/$/, "");
+import { resolveOrigin } from "./net.js";
+
+const IOT_BASE = resolveOrigin(
+  import.meta.env.VITE_IOT_API_URL || "http://localhost:8000",
+  8000
+).replace(/\/$/, "");
 const IOT_API = `${IOT_BASE}/api/v1`;
 const IOT_KEY = import.meta.env.VITE_IOT_API_KEY || "";
 export const IOT_MACHINE_ID = import.meta.env.VITE_IOT_MACHINE_ID || "MSv1M-001";

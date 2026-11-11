@@ -4,7 +4,10 @@
 // layer any more: if the server cannot be reached the call throws an Error
 // with `offline = true` so screens can render a "cannot reach the server"
 // state with a retry action.
-const ORIGIN = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import { resolveOrigin } from "./net.js";
+
+// Works on localhost and from other devices on the LAN (see net.js).
+const ORIGIN = resolveOrigin(import.meta.env.VITE_API_URL || "http://localhost:5000", 5000);
 export const API_ORIGIN = ORIGIN;
 export const API_BASE = ORIGIN + "/api";
 
