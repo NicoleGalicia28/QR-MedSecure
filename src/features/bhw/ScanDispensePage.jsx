@@ -39,13 +39,15 @@ export default function ScanDispensePage() {
   // Camera / scan state
   const [phase, setPhase] = useState("idle"); // idle | starting | scanning | validating | success | error
   const [cameraError, setCameraError] = useState("");
-  const [decodedText, setDecodedText] = useState("");
   const [manualText, setManualText] = useState("");
 
   // Verified beneficiary from POST /qr/validate
   const [beneficiary, setBeneficiary] = useState(null);
   const [validateError, setValidateError] = useState("");
   const [selectedRxId, setSelectedRxId] = useState("");
+  // Clinical records returned by /qr/validate. Used when the beneficiary has a
+  // recorded prescription but no structured prescription row.
+  const [scannedRecords, setScannedRecords] = useState([]);
 
   // Dispensing submission
   const [submitting, setSubmitting] = useState(false);
@@ -65,12 +67,24 @@ export default function ScanDispensePage() {
   });
 
   const allowedMeds = ["amlodipine", "metformin", "losartan"];
+  // `medicine` is serialized as a plain string ("Amlodipine 5 mg") by the
+  // API, but accept an object too in case the shape changes.
   const rxList = (prescriptions || []).filter((p) => {
-    const name = String(p.medicine?.name || p.medicineName || "").toLowerCase();
+    const raw =
+      typeof p.medicine === "string"
+        ? p.medicine
+        : p.medicine?.name || p.medicineName || "";
+    const name = String(raw).toLowerCase();
     return allowedMeds.some((m) => name.includes(m));
   });
   const selectedRx =
     rxList.find((p) => String(p.id) === String(selectedRxId)) || rxList[0] || null;
+
+  // Fallback for beneficiaries whose prescription exists only as free text on
+  // a clinical record (e.g. "Losartan 5mg once daily").
+  const recordedPrescriptions = (scannedRecords || []).filter(
+    (r) => r.prescription && String(r.prescription).trim()
+  );
 
   // Auto-select the first prescription once loaded.
   useEffect(() => {
@@ -186,7 +200,6 @@ export default function ScanDispensePage() {
     const raw = (payload || "").trim();
     if (!raw) return;
     stopDecoding();
-    setDecodedText(raw.length > 60 ? `${raw.slice(0, 60)}…` : raw);
     setValidateError("");
     setSubmitNotice(null);
     setBeneficiary(null);
@@ -205,15 +218,16 @@ export default function ScanDispensePage() {
       return;
     }
     setBeneficiary(res.data.beneficiary);
+    setScannedRecords(res.data.clinicalRecords || []);
     setPhase("success");
   }
 
   function rescan() {
     setBeneficiary(null);
     setSelectedRxId("");
+    setScannedRecords([]);
     setValidateError("");
     setSubmitNotice(null);
-    setDecodedText("");
     setManualText("");
     setQuantity("");
     matchedRef.current = false;
@@ -372,9 +386,7 @@ export default function ScanDispensePage() {
                 <div className="sd-result">
                   <Check size={13} strokeWidth={3} />
                   <span>{beneficiary?.name} verified</span>
-                  {decodedText && (
-                    <span className="sd-result__id">· {decodedText}</span>
-                  )}
+                  <span className="sd-result__id">· {beneficiary?.publicId}</span>
                 </div>
                 <button
                   className="sd-scan-btn"
@@ -534,78 +546,124 @@ export default function ScanDispensePage() {
 
             {!beneficiary ? (
               <p className="sd-rx-header__sub">
-                Verify a beneficiary QR to load active prescriptions.
+                Verify a beneficiary QR to load the authorized medicines.
               </p>
             ) : rxLoading && !prescriptions ? (
               <Loading label="Loading prescriptions…" />
             ) : rxError ? (
               <ErrorState message={rxError} onRetry={refetchRx} />
-            ) : rxList.length === 0 ? (
+            ) : rxList.length === 0 && recordedPrescriptions.length === 0 ? (
               <EmptyState
-                title="No active prescriptions"
-                message="This beneficiary has no active prescription to dispense against."
+                title="No prescription on file"
+                message="This beneficiary has no authorized medicine or recorded prescription to review."
               />
+            ) : rxList.length === 0 ? (
+              <>
+                <div className="sd-rx-recorded-note">
+                  No structured prescription is on file. The recorded
+                  prescription from the clinical record is shown below for
+                  cross-checking.
+                </div>
+                {recordedPrescriptions.map((r) => (
+                  <table className="sd-rx-table" key={r.id}>
+                    <tbody>
+                      <tr>
+                        <th scope="row">Prescription (recorded)</th>
+                        <td className="sd-rx-table__med">{r.prescription}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Record</th>
+                        <td>{r.code || "—"}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Type</th>
+                        <td>{r.type || "—"}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Date recorded</th>
+                        <td>{fmtDate(r.recordedAt) || "—"}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Reason for visit</th>
+                        <td>{r.reasonForVisit || "—"}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Symptoms</th>
+                        <td>{r.symptoms || "—"}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Medical history</th>
+                        <td>{r.medicalHistory || "—"}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Notes</th>
+                        <td>{r.notes || "—"}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Recorded by</th>
+                        <td>{r.recordedBy || "—"}</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Status</th>
+                        <td>{r.status || "—"}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                ))}
+                <p className="sd-rx-header__sub" style={{ marginTop: 10 }}>
+                  A structured prescription must be issued before medicine can
+                  be released through this screen.
+                </p>
+              </>
             ) : (
               <>
-                {/* Prescription picker */}
-                {rxList.length > 1 && (
-                  <div className="sd-rx-inputs">
-                    <div>
-                      <label className="sd-rx-input-label">Prescription</label>
-                      <select
-                        className="sd-rx-select"
-                        value={selectedRx ? String(selectedRx.id) : ""}
-                        onChange={(e) => setSelectedRxId(e.target.value)}
-                      >
-                        {rxList.map((p) => (
-                          <option key={p.id} value={p.id}>
-                            {p.code} · {p.medicine}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                )}
-
-                {/* Rx meta grid */}
-                <div className="sd-rx-grid">
-                  <div className="sd-rx-field">
-                    <span className="sd-rx-field__label">Prescription</span>
-                    <span className="sd-rx-field__value">
-                      {selectedRx.code}
-                    </span>
-                  </div>
-                  <div className="sd-rx-field">
-                    <span className="sd-rx-field__label">Prescriber</span>
-                    <span className="sd-rx-field__value">
-                      {selectedRx.prescribedBy || "—"}
-                    </span>
-                  </div>
-                  <div className="sd-rx-field">
-                    <span className="sd-rx-field__label">Medicine</span>
-                    <span className="sd-rx-field__value">
-                      {selectedRx.medicine}
-                    </span>
-                  </div>
-                  <div className="sd-rx-field">
-                    <span className="sd-rx-field__label">Directions</span>
-                    <span className="sd-rx-field__value sd-rx-field__value--muted">
-                      {selectedRx.dosage || "—"}
-                    </span>
-                  </div>
-                  <div className="sd-rx-field">
-                    <span className="sd-rx-field__label">Valid until</span>
-                    <span className="sd-rx-field__value">
-                      {fmtDate(selectedRx.validUntil) || "—"}
-                    </span>
-                  </div>
-                  <div className="sd-rx-field">
-                    <span className="sd-rx-field__label">Remaining</span>
-                    <span className="sd-rx-field__value sd-rx-field__value--muted">
-                      {selectedRx.remaining} of {selectedRx.quantity}
-                    </span>
-                  </div>
-                </div>
+                {/* All authorized medicines, one row each */}
+                <table className="sd-rx-table">
+                  <thead>
+                    <tr>
+                      <th aria-label="Select"></th>
+                      <th>Medicine</th>
+                      <th>Prescription</th>
+                      <th>Directions</th>
+                      <th>Authorized</th>
+                      <th>Remaining</th>
+                      <th>Valid until</th>
+                      <th>Prescriber</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rxList.map((p) => {
+                      const isSelected =
+                        String(p.id) === String(selectedRx?.id);
+                      return (
+                        <tr
+                          key={p.id}
+                          className={
+                            isSelected ? "sd-rx-table__row--selected" : ""
+                          }
+                          onClick={() => setSelectedRxId(String(p.id))}
+                        >
+                          <td>
+                            <input
+                              type="radio"
+                              name="sd-rx-choice"
+                              checked={isSelected}
+                              onChange={() => setSelectedRxId(String(p.id))}
+                              aria-label={`Select ${p.medicine}`}
+                            />
+                          </td>
+                          <td className="sd-rx-table__med">{p.medicine}</td>
+                          <td>{p.code}</td>
+                          <td>{p.dosage || "—"}</td>
+                          <td>{p.quantity}</td>
+                          <td>{p.remaining}</td>
+                          <td>{fmtDate(p.validUntil) || "—"}</td>
+                          <td>{p.prescribedBy || "—"}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
 
                 {/* Inputs: qty + method */}
                 <div className="sd-rx-inputs">
@@ -650,6 +708,14 @@ export default function ScanDispensePage() {
                         0
                       )}{" "}
                       units
+                    </span>
+                  </div>
+                  <div className="sd-rx-field">
+                    <span className="sd-rx-field__label">
+                      Selected prescription
+                    </span>
+                    <span className="sd-rx-field__value">
+                      {selectedRx.code}
                     </span>
                   </div>
                 </div>

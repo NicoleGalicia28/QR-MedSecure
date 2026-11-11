@@ -705,3 +705,82 @@
   flex-wrap: wrap;
   gap: 8px;
 }
+/* ---------- AUTHORIZED MEDICINE TABLE ---------- */
+
+.sd-rx-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  margin-bottom: 16px;
+}
+
+.sd-rx-table thead th {
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #6b7280;
+  padding: 9px 10px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+.sd-rx-table tbody td {
+  padding: 11px 10px;
+  border-bottom: 1px solid #f3f4f6;
+  color: #1a1a1a;
+  vertical-align: middle;
+}
+
+.sd-rx-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.sd-rx-table tbody tr {
+  cursor: pointer;
+}
+
+.sd-rx-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.sd-rx-table tbody tr.sd-rx-table__row--selected {
+  background: #ecfdf5;
+}
+
+.sd-rx-table tbody tr.sd-rx-table__row--selected td {
+  border-bottom-color: #d1fae5;
+}
+
+.sd-rx-table__med {
+  font-weight: 700;
+}
+
+.sd-rx-table input[type="radio"] {
+  accent-color: #0a3d3d;
+  cursor: pointer;
+}
+
+/* Recorded-prescription fallback: field/value rows */
+.sd-rx-table th[scope="row"] {
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #6b7280;
+  padding: 10px;
+  width: 34%;
+  background: #f9fafb;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: top;
+}
+
+.sd-rx-recorded-note {
+  font-size: 11.5px;
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
