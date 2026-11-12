@@ -11,6 +11,9 @@ dist-ssr
 !.vscode/launch.json
 docs/
 
+# Service logs
+logs/
+
 # Secrets
 server/.env
 server/.env.local
