@@ -8,6 +8,15 @@ import { iotApi, IOT_CONFIGURED, IOT_MACHINE_ID } from "../../lib/iotApi";
 import "../admin/DashboardPage.css";
 import "./MachineMonitoring.css";
 
+// Only motor 1 is wired/working on the current prototype. All three medicine
+// slots are served by that motor, so every command uses this channel.
+const MOTOR_CHANNEL = 1;
+const MACHINE_SLOTS = [
+  { slot: "A", medicine: "Losartan 50 mg" },
+  { slot: "B", medicine: "Metformin 500 mg" },
+  { slot: "C", medicine: "Amlodipine 5 mg" },
+];
+
 export default function MachineMonitoringPage() {
   // Machine fleet - the first registered unit is the monitored device.
   const machineQuery = useEndpoint("/machine", (res) => res.machines || []);
@@ -24,7 +33,7 @@ export default function MachineMonitoringPage() {
 
   // IoT (Django) API state - runs alongside Express for ESP32/device control
   const [iot, setIot] = useState({ status: "idle", inventory: [], error: null, lastChecked: null });
-  const [cmd, setCmd] = useState({ type: "DISPENSE", channel: 1, sending: false, message: null });
+  const [iotCmd, setIotCmd] = useState({ sending: false, message: null });
 
   const refreshIot = useCallback(async () => {
     if (!IOT_CONFIGURED) {
@@ -40,22 +49,30 @@ export default function MachineMonitoringPage() {
     }
   }, []);
 
-  const sendIotCommand = useCallback(async () => {
-    setCmd((c) => ({ ...c, sending: true, message: null }));
-    try {
-      const res = await iotApi.sendCommand({
-        // Must match the firmware's machineId (MSv1M-001), not the Express device code.
-        machine_id: IOT_MACHINE_ID,
-        command_type: cmd.type,
-        motor_channel: Number(cmd.channel) || 1,
-        parameters: null,
-      });
-      setCmd((c) => ({ ...c, sending: false, message: `Queued command #${res?.command_id ?? "?"} (${cmd.type})` }));
-      refreshIot();
-    } catch (e) {
-      setCmd((c) => ({ ...c, sending: false, message: `Error: ${e.message}` }));
-    }
-  }, [cmd.type, cmd.channel, refreshIot]);
+  const sendIotCommand = useCallback(
+    async ({ type, label = "" }) => {
+      setIotCmd({ sending: true, message: null });
+      try {
+        const res = await iotApi.sendCommand({
+          // Must match the firmware's machineId (MSv1M-001), not the Express device code.
+          machine_id: IOT_MACHINE_ID,
+          command_type: type,
+          motor_channel: MOTOR_CHANNEL,
+          parameters: "",
+        });
+        // Django returns { status, message, data: { id, ... } }.
+        const id = res?.data?.id ?? res?.command_id ?? "?";
+        setIotCmd({
+          sending: false,
+          message: `Queued command #${id} — ${type}${label ? ` · ${label}` : ""} (motor ${MOTOR_CHANNEL})`,
+        });
+        refreshIot();
+      } catch (e) {
+        setIotCmd({ sending: false, message: `Error: ${e.message}` });
+      }
+    },
+    [refreshIot]
+  );
 
   const refreshAll = useCallback(() => {
     machineQuery.refetch();
@@ -234,8 +251,8 @@ export default function MachineMonitoringPage() {
               <div className="mm-panel">
                 <h2 className="mm-panel__title">IoT Device API (ESP32)</h2>
                 <p className="mm-panel__subtitle">
-                  Connected to Django IoT service for machine inventory, command queue, and ESP32 polling.
-                  Machine ID: <strong>{IOT_MACHINE_ID}</strong> (must match the ESP32 firmware)
+                  Django IoT service · machine <strong>{IOT_MACHINE_ID}</strong> ·
+                  only <strong>motor {MOTOR_CHANNEL}</strong> is wired on this prototype.
                 </p>
 
                 {!IOT_CONFIGURED ? (
@@ -252,61 +269,117 @@ export default function MachineMonitoringPage() {
                   />
                 ) : (
                   <>
-                    <div style={{ fontSize: 12, color: "#6b7280", marginBottom: 10 }}>
-                      Last checked: {fmtDateTime(iot.lastChecked) || "—"} · {iot.inventory.length} inventory item(s)
+                    <div className="mm-iot-meta">
+                      Last checked: {fmtDateTime(iot.lastChecked) || "—"}
                     </div>
-                    {iot.inventory.length === 0 ? (
-                      <EmptyState title="No IoT inventory" message="No medicine inventory found in the Django IoT database." />
-                    ) : (
-                      <table className="mm-table">
-                        <thead>
-                          <tr>
-                            <th>ID</th>
-                            <th>Medicine</th>
-                            <th>Stock</th>
-                            <th>Batch</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {iot.inventory.map((item) => (
-                            <tr key={item.id}>
-                              <td>{item.id}</td>
-                              <td className="mm-table__med">{item.medicine_name}</td>
-                              <td>{item.stock_quantity}</td>
-                              <td>{item.batch_number || "—"}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    )}
 
-                    <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid #e5e7eb" }}>
-                      <p style={{ margin: "0 0 8px", fontSize: 13, fontWeight: 600, color: "#1a1a1a" }}>Send command (ESP32 queue)</p>
-                      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-                        <select
-                          value={cmd.type}
-                          onChange={(e) => setCmd((c) => ({ ...c, type: e.target.value }))}
-                          style={{ padding: "8px 10px", borderRadius: 6, border: "1px solid #d1d5db", fontSize: 13 }}
-                        >
-                          <option value="DISPENSE">DISPENSE</option>
-                          <option value="REFILL">REFILL</option>
-                          <option value="CALIBRATE">CALIBRATE</option>
-                          <option value="TEST_IR">TEST_IR</option>
-                        </select>
-                        <input
-                          type="number"
-                          min="1"
-                          value={cmd.channel}
-                          onChange={(e) => setCmd((c) => ({ ...c, channel: e.target.value }))}
-                          placeholder="Motor channel"
-                          style={{ width: 120, padding: "8px 10px", borderRadius: 6, border: "1px solid #d1d5db", fontSize: 13 }}
-                        />
-                        <button type="button" className="mm-log-btn" onClick={sendIotCommand} disabled={cmd.sending || iot.status === "offline"}>
-                          <Send size={14} /> {cmd.sending ? "Sending..." : "Queue command"}
-                        </button>
-                      </div>
-                      {cmd.message ? <p style={{ margin: "8px 0 0", fontSize: 12, color: cmd.message.startsWith("Error") ? "#b91c1c" : "#166534" }}>{cmd.message}</p> : null}
+                    {/* Medicine slots — all three are served by motor 1 */}
+                    <p className="mm-iot-title">Medicine slots</p>
+                    <p className="mm-iot-hint">
+                      Only motor {MOTOR_CHANNEL} is working. Each slot queues a
+                      DISPENSE command on channel {MOTOR_CHANNEL}.
+                    </p>
+                    <table className="mm-table">
+                      <thead>
+                        <tr>
+                          <th>Slot</th>
+                          <th>Medicine</th>
+                          <th>Motor</th>
+                          <th style={{ textAlign: "right" }}>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {MACHINE_SLOTS.map((s) => (
+                          <tr key={s.slot}>
+                            <td className="mm-table__slot">{s.slot}</td>
+                            <td className="mm-table__med">{s.medicine}</td>
+                            <td>Motor {MOTOR_CHANNEL}</td>
+                            <td style={{ textAlign: "right" }}>
+                              <button
+                                type="button"
+                                className="mm-log-btn mm-log-btn--sm"
+                                onClick={() =>
+                                  sendIotCommand({
+                                    type: "DISPENSE",
+                                    label: `${s.medicine} · slot ${s.slot}`,
+                                  })
+                                }
+                                disabled={iotCmd.sending || iot.status === "offline"}
+                              >
+                                <Send size={13} /> {iotCmd.sending ? "Sending..." : "Dispense"}
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+
+                    {/* Maintenance commands */}
+                    <p className="mm-iot-title" style={{ marginTop: 18 }}>
+                      Maintenance
+                    </p>
+                    <div className="mm-iot-actions">
+                      <button
+                        type="button"
+                        className="mm-log-btn mm-log-btn--outline"
+                        onClick={() =>
+                          sendIotCommand({ type: "CALIBRATE", label: `motor ${MOTOR_CHANNEL}` })
+                        }
+                        disabled={iotCmd.sending || iot.status === "offline"}
+                      >
+                        <Wrench size={14} /> Calibrate motor {MOTOR_CHANNEL}
+                      </button>
+                      <button
+                        type="button"
+                        className="mm-log-btn mm-log-btn--outline"
+                        onClick={() => sendIotCommand({ type: "REFILL", label: "refill" })}
+                        disabled={iotCmd.sending || iot.status === "offline"}
+                      >
+                        <RefreshCw size={14} /> Refill
+                      </button>
                     </div>
+
+                    {iotCmd.message ? (
+                      <p
+                        className={
+                          "mm-iot-msg " +
+                          (iotCmd.message.startsWith("Error")
+                            ? "mm-iot-msg--error"
+                            : "mm-iot-msg--ok")
+                        }
+                      >
+                        {iotCmd.message}
+                      </p>
+                    ) : null}
+
+                    {/* Django inventory (empty by design until stocked) */}
+                    {iot.inventory.length > 0 ? (
+                      <>
+                        <p className="mm-iot-title" style={{ marginTop: 18 }}>
+                          IoT inventory
+                        </p>
+                        <table className="mm-table">
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Medicine</th>
+                              <th>Stock</th>
+                              <th>Batch</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {iot.inventory.map((item) => (
+                              <tr key={item.id}>
+                                <td>{item.id}</td>
+                                <td className="mm-table__med">{item.medicine_name}</td>
+                                <td>{item.stock_quantity}</td>
+                                <td>{item.batch_number || "—"}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </>
+                    ) : null}
                   </>
                 )}
               </div>
