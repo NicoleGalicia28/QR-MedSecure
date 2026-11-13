@@ -19,7 +19,6 @@ export default function MedicineInventoryPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [iotCmd, setIotCmd] = useState({ sending: false, message: null });
-  const [refillQty, setRefillQty] = useState({});
 
   const { data: items, isLoading, error, refetch } = useEndpoint(
     "/inventory",
@@ -45,29 +44,20 @@ export default function MedicineInventoryPage() {
     return matchesSearch && matchesFilter;
   });
 
-  const sendIotCommand = useCallback(async ({ type, label = "", medicine_inventory_id, quantity_added }) => {
+  const sendIotCommand = useCallback(async ({ type, label = "" }) => {
     setIotCmd({ sending: true, message: null });
     try {
-      if (type === "REFILL" && medicine_inventory_id && quantity_added) {
-        const res = await iotApi.refill({ medicine_inventory_id, quantity_added });
-        const id = res?.data?.id ?? res?.id ?? "?";
-        setIotCmd({
-          sending: false,
-          message: `Refill queued #${id} — ${quantity_added} units${label ? ` · ${label}` : ""}`,
-        });
-      } else {
-        const res = await iotApi.sendCommand({
-          machine_id: IOT_MACHINE_ID,
-          command_type: type,
-          motor_channel: 1,
-          parameters: "",
-        });
-        const id = res?.data?.id ?? res?.command_id ?? "?";
-        setIotCmd({
-          sending: false,
-          message: `Queued command #${id} — ${type}${label ? ` · ${label}` : ""} (motor 1)`,
-        });
-      }
+      const res = await iotApi.sendCommand({
+        machine_id: IOT_MACHINE_ID,
+        command_type: type,
+        motor_channel: 1,
+        parameters: "",
+      });
+      const id = res?.data?.id ?? res?.command_id ?? "?";
+      setIotCmd({
+        sending: false,
+        message: `Queued command #${id} — ${type}${label ? ` · ${label}` : ""} (motor 1)`,
+      });
     } catch (e) {
       setIotCmd({ sending: false, message: `Error: ${e.message}` });
     }
@@ -189,12 +179,9 @@ export default function MedicineInventoryPage() {
                               type="button"
                               className="inv-iot-btn inv-iot-btn--refill"
                               onClick={() => {
-                                const qty = refillQty[m.id] || 30;
                                 sendIotCommand({
                                   type: "REFILL",
                                   label: `${m.name} · ${m.slot}`,
-                                  medicine_inventory_id: m.id,
-                                  quantity_added: qty,
                                 });
                               }}
                               disabled={iotCmd.sending || !IOT_CONFIGURED}
