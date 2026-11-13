@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import jsQR from "jsqr";
 import { useEndpoint, sendApi } from "../../lib/useApi";
+import { iotApi, IOT_MACHINE_ID } from "../../lib/iotApi";
 import { Loading, ErrorState, EmptyState, InlineNotice } from "../../lib/ui";
 import { fmtDate } from "./apiFormat";
 import "../admin/DashboardPage.css";
@@ -31,10 +32,37 @@ const STEPS = [
 
 const SCAN_WIDTH = 480;
 
+// The prototype only has motor 1 wired, so every machine release uses it.
+const DISPENSE_MOTOR_CHANNEL = 1;
+
+// Free-text prescriptions are written by hand, so accept common spellings
+// (e.g. the existing "Lozartan 5mg once daily" record).
+const MEDICINE_ALIASES = {
+  amlodipine: ["amlodipine", "amlodipin", "amlodpine"],
+  metformin: ["metformin", "metformine", "metphormin"],
+  losartan: ["losartan", "lozartan", "losartin"],
+};
+
+function medicineKey(name) {
+  const n = String(name || "").toLowerCase();
+  return Object.keys(MEDICINE_ALIASES).find((key) => n.includes(key)) || null;
+}
+
+function matchMedicine(text, medicines) {
+  const t = String(text || "").toLowerCase();
+  if (!t) return null;
+  return (
+    medicines.find((med) => {
+      const key = medicineKey(med.name);
+      return key && MEDICINE_ALIASES[key].some((alias) => t.includes(alias));
+    }) || null
+  );
+}
+
 export default function ScanDispensePage() {
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState("");
-  const [method, setMethod] = useState("Manual · Health center");
+  const [method, setMethod] = useState("IoT dispensing machine · TY-DM-01");
 
   // Camera / scan state
   const [phase, setPhase] = useState("idle"); // idle | starting | scanning | validating | success | error
@@ -48,6 +76,11 @@ export default function ScanDispensePage() {
   // Clinical records returned by /qr/validate. Used when the beneficiary has a
   // recorded prescription but no structured prescription row.
   const [scannedRecords, setScannedRecords] = useState([]);
+  // Which recorded (free-text) prescription is selected for release.
+  const [selectedRecordedId, setSelectedRecordedId] = useState("");
+  // Prescription created from a recorded one, reused if the transaction is
+  // retried so we never create duplicates.
+  const [createdRxId, setCreatedRxId] = useState(null);
 
   // Dispensing submission
   const [submitting, setSubmitting] = useState(false);
@@ -86,6 +119,28 @@ export default function ScanDispensePage() {
     (r) => r.prescription && String(r.prescription).trim()
   );
 
+  // Inventory is used to match a recorded prescription to a real medicine row;
+  // the transaction endpoint requires a medicine id.
+  const { data: inventoryItems } = useEndpoint(
+    "/inventory",
+    (res) => res.items || []
+  );
+  const medicines = inventoryItems || [];
+
+  const selectedRecorded =
+    rxList.length === 0
+      ? recordedPrescriptions.find(
+          (r) => String(r.id) === String(selectedRecordedId)
+        ) ||
+        recordedPrescriptions[0] ||
+        null
+      : null;
+  const recordedMedicine = selectedRecorded
+    ? matchMedicine(selectedRecorded.prescription, medicines)
+    : null;
+  // True when there is something valid to release (structured or recorded).
+  const canDispense = Boolean(selectedRx) || Boolean(selectedRecorded && recordedMedicine);
+
   // Auto-select the first prescription once loaded.
   useEffect(() => {
     if (rxList.length > 0 && !selectedRxId) {
@@ -93,11 +148,25 @@ export default function ScanDispensePage() {
     }
   }, [rxList, selectedRxId]);
 
+  // Auto-select the first recorded prescription when there is no structured one.
   useEffect(() => {
-    if (selectedRx && !quantity) {
+    if (
+      rxList.length === 0 &&
+      recordedPrescriptions.length > 0 &&
+      !selectedRecordedId
+    ) {
+      setSelectedRecordedId(String(recordedPrescriptions[0].id));
+    }
+  }, [rxList.length, recordedPrescriptions.length, selectedRecordedId]);
+
+  // Prefill the quantity from the selected structured prescription. Only run
+  // when the selection changes so the BHW can clear and retype the value.
+  useEffect(() => {
+    if (selectedRx) {
       setQuantity(String(selectedRx.remaining));
     }
-  }, [selectedRx, quantity]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedRx?.id]);
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -204,6 +273,9 @@ export default function ScanDispensePage() {
     setSubmitNotice(null);
     setBeneficiary(null);
     setSelectedRxId("");
+    setSelectedRecordedId("");
+    setCreatedRxId(null);
+    setQuantity("");
     setPhase("validating");
 
     const res = await sendApi("/qr/validate", { qrData: raw });
@@ -225,6 +297,8 @@ export default function ScanDispensePage() {
   function rescan() {
     setBeneficiary(null);
     setSelectedRxId("");
+    setSelectedRecordedId("");
+    setCreatedRxId(null);
     setScannedRecords([]);
     setValidateError("");
     setSubmitNotice(null);
@@ -247,39 +321,121 @@ export default function ScanDispensePage() {
   /* ---------------- Dispensing ---------------- */
 
   const handleConfirm = async () => {
-    if (submitting) return;
-    if (!beneficiary || !selectedRx) return;
+    if (submitting || !beneficiary) return;
+    const qty = parseInt(quantity, 10);
+    if (!qty || qty <= 0) {
+      setSubmitNotice({
+        kind: "error",
+        message: "Enter a quantity greater than 0.",
+      });
+      return;
+    }
+
+    // Resolve what to dispense. A structured prescription is preferred; when
+    // only a recorded (free-text) prescription exists we create the structured
+    // prescription row first so the transaction stays auditable.
+    let medicineId = selectedRx?.medicineId ?? null;
+    let prescriptionId = selectedRx?.id ?? null;
+    let note = "";
+
+    if (!selectedRx) {
+      if (!selectedRecorded) {
+        setSubmitNotice({
+          kind: "error",
+          message: "Select a recorded prescription to dispense against.",
+        });
+        return;
+      }
+      if (!recordedMedicine) {
+        setSubmitNotice({
+          kind: "error",
+          message: `Could not match "${selectedRecorded.prescription}" to Amlodipine, Metformin or Losartan. Issue a structured prescription first.`,
+        });
+        return;
+      }
+      medicineId = recordedMedicine.id;
+      note = `From recorded prescription ${selectedRecorded.code || selectedRecorded.id}`;
+    }
+
     setSubmitting(true);
     setSubmitNotice(null);
 
-    const res = await sendApi("/transactions", {
-      beneficiaryId: beneficiary.publicId,
-      medicineId: selectedRx.medicineId,
-      quantity: Number(quantity),
-      prescriptionId: selectedRx.id,
-      machineCode: method.includes("TY-DM-01") ? "TY-DM-01" : undefined,
-      note: "",
-    });
+    try {
+      if (!prescriptionId) {
+        if (createdRxId) {
+          prescriptionId = createdRxId;
+        } else {
+          const rxRes = await sendApi("/prescriptions", {
+            beneficiaryId: beneficiary.publicId,
+            medicineId,
+            dosage: selectedRecorded.prescription,
+            quantity: qty,
+            prescribedBy: selectedRecorded.recordedBy || "Recorded prescription",
+            validUntil: null,
+          });
+          if (!rxRes.ok) {
+            setSubmitNotice({
+              kind: "error",
+              message: `Could not create the prescription from the record: ${rxRes.error}`,
+            });
+            return;
+          }
+          prescriptionId = rxRes.data?.prescription?.id ?? null;
+          setCreatedRxId(prescriptionId);
+        }
+      }
 
-    setSubmitting(false);
-    if (!res.ok) {
-      setSubmitNotice({ kind: "error", message: res.error });
-      return;
-    }
-    const transaction = res.data?.transaction;
-    if (transaction?.id != null) {
-      navigate(`/bhw/dispensing/${transaction.id}`);
-    } else {
-      setSubmitNotice({
-        kind: "success",
-        message: "Dispensing recorded. Open the transactions log for the receipt.",
+      const isIot = method.includes("TY-DM-01");
+      const res = await sendApi("/transactions", {
+        beneficiaryId: beneficiary.publicId,
+        medicineId,
+        quantity: qty,
+        prescriptionId,
+        machineCode: isIot ? "TY-DM-01" : undefined,
+        note,
       });
+
+      if (!res.ok) {
+        setSubmitNotice({ kind: "error", message: res.error });
+        return;
+      }
+
+      // Queue the physical release on motor 1 when the IoT machine is selected.
+      let notice = {
+        kind: "success",
+        message: `Dispensing recorded for ${beneficiary.name}.`,
+      };
+      if (isIot) {
+        try {
+          await iotApi.sendCommand({
+            machine_id: IOT_MACHINE_ID,
+            command_type: "DISPENSE",
+            motor_channel: DISPENSE_MOTOR_CHANNEL,
+            parameters: "",
+          });
+          notice.message += ` Dispense command queued for motor ${DISPENSE_MOTOR_CHANNEL}.`;
+        } catch (e) {
+          notice = {
+            kind: "error",
+            message: `Dispensing recorded, but the machine command failed: ${e.message}`,
+          };
+        }
+      }
+
+      const transaction = res.data?.transaction;
+      if (transaction?.id != null) {
+        navigate(`/bhw/dispensing/${transaction.id}`, { state: { notice } });
+      } else {
+        setSubmitNotice(notice);
+      }
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleCancel = () => {
     setQuantity("");
-    setMethod("Manual · Health center");
+    setMethod("IoT dispensing machine · TY-DM-01");
     setSubmitNotice(null);
   };
 
@@ -292,7 +448,7 @@ export default function ScanDispensePage() {
     error: "Scan failed",
   }[phase];
 
-  const stepIndex = beneficiary ? (selectedRx ? 2 : 1) : 0;
+  const stepIndex = beneficiary ? (canDispense ? 2 : 1) : 0;
 
   return (
     <>
@@ -499,10 +655,13 @@ export default function ScanDispensePage() {
                     type="button"
                     className="sd-btn sd-btn--primary"
                     style={{ flex: 1 }}
-                    disabled={!selectedRx || submitting}
+                    disabled={!canDispense || submitting}
                     onClick={() => {
-                      // scroll to review/confirm section
-                      document.querySelector('.sd-rx-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      // Move the BHW to the review/confirm step.
+                      document
+                        .querySelector(".sd-rx-panel")
+                        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      document.querySelector(".sd-rx-input")?.focus();
                     }}
                   >
                     Dispense medicine
@@ -560,60 +719,138 @@ export default function ScanDispensePage() {
             ) : rxList.length === 0 ? (
               <>
                 <div className="sd-rx-recorded-note">
-                  No structured prescription is on file. The recorded
-                  prescription from the clinical record is shown below for
-                  cross-checking.
+                  No structured prescription is on file. Select the recorded
+                  prescription to release against — confirming will create a
+                  structured prescription from it.
                 </div>
-                {recordedPrescriptions.map((r) => (
-                  <table className="sd-rx-table" key={r.id}>
-                    <tbody>
-                      <tr>
-                        <th scope="row">Prescription (recorded)</th>
-                        <td className="sd-rx-table__med">{r.prescription}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Record</th>
-                        <td>{r.code || "—"}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Type</th>
-                        <td>{r.type || "—"}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Date recorded</th>
-                        <td>{fmtDate(r.recordedAt) || "—"}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Reason for visit</th>
-                        <td>{r.reasonForVisit || "—"}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Symptoms</th>
-                        <td>{r.symptoms || "—"}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Medical history</th>
-                        <td>{r.medicalHistory || "—"}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Notes</th>
-                        <td>{r.notes || "—"}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Recorded by</th>
-                        <td>{r.recordedBy || "—"}</td>
-                      </tr>
-                      <tr>
-                        <th scope="row">Status</th>
-                        <td>{r.status || "—"}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                ))}
-                <p className="sd-rx-header__sub" style={{ marginTop: 10 }}>
-                  A structured prescription must be issued before medicine can
-                  be released through this screen.
-                </p>
+                {recordedPrescriptions.map((r) => {
+                  const isSelected =
+                    String(r.id) === String(selectedRecorded?.id);
+                  const med = matchMedicine(r.prescription, medicines);
+                  return (
+                    <table
+                      className={`sd-rx-table ${
+                        isSelected ? "sd-rx-table--selected" : ""
+                      }`}
+                      key={r.id}
+                      onClick={() => setSelectedRecordedId(String(r.id))}
+                    >
+                      <tbody>
+                        <tr>
+                          <th scope="row">
+                            <input
+                              type="radio"
+                              name="sd-recorded-choice"
+                              checked={isSelected}
+                              onChange={() =>
+                                setSelectedRecordedId(String(r.id))
+                              }
+                              aria-label={`Select recorded prescription ${
+                                r.code || r.id
+                              }`}
+                              style={{ marginRight: 8 }}
+                            />
+                            Prescription (recorded)
+                          </th>
+                          <td className="sd-rx-table__med">
+                            {r.prescription}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Matched medicine</th>
+                          <td>
+                            {med ? (
+                              <>
+                                {med.name} · {med.slot} · {med.stock}{" "}
+                                {med.unit} in stock
+                              </>
+                            ) : (
+                              <span className="sd-rx-recorded-error">
+                                No match — issue a structured prescription
+                                first.
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Record</th>
+                          <td>{r.code || "—"}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Type</th>
+                          <td>{r.type || "—"}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Date recorded</th>
+                          <td>{fmtDate(r.recordedAt) || "—"}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Reason for visit</th>
+                          <td>{r.reasonForVisit || "—"}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Symptoms</th>
+                          <td>{r.symptoms || "—"}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Medical history</th>
+                          <td>{r.medicalHistory || "—"}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Notes</th>
+                          <td>{r.notes || "—"}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Recorded by</th>
+                          <td>{r.recordedBy || "—"}</td>
+                        </tr>
+                        <tr>
+                          <th scope="row">Status</th>
+                          <td>{r.status || "—"}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  );
+                })}
+
+                {selectedRecorded && recordedMedicine ? (
+                  <>
+                    <div className="sd-rx-inputs">
+                      <div>
+                        <label className="sd-rx-input-label">
+                          Quantity to dispense <span className="req">*</span>
+                        </label>
+                        <input
+                          type="number"
+                          min="1"
+                          max={recordedMedicine.stock}
+                          className="sd-rx-input"
+                          value={quantity}
+                          onChange={(e) => setQuantity(e.target.value)}
+                          placeholder="e.g. 30"
+                        />
+                      </div>
+                      <div>
+                        <label className="sd-rx-input-label">
+                          Release method
+                        </label>
+                        <select
+                          className="sd-rx-select"
+                          value={method}
+                          onChange={(e) => setMethod(e.target.value)}
+                        >
+                          <option>IoT dispensing machine · TY-DM-01</option>
+                          <option>Manual · Health center</option>
+                        </select>
+                      </div>
+                    </div>
+                    <p className="sd-rx-header__sub" style={{ marginTop: 10 }}>
+                      {method.includes("TY-DM-01")
+                        ? "Confirming queues a DISPENSE command for motor 1."
+                        : "Confirming records the transaction only."}
+                    </p>
+                  </>
+                ) : null}
               </>
             ) : (
               <>
@@ -676,7 +913,7 @@ export default function ScanDispensePage() {
                       min="1"
                       max={selectedRx.remaining}
                       className="sd-rx-input"
-                      value={quantity || String(selectedRx.remaining)}
+                      value={quantity}
                       onChange={(e) => setQuantity(e.target.value)}
                     />
                   </div>
@@ -687,9 +924,17 @@ export default function ScanDispensePage() {
                       value={method}
                       onChange={(e) => setMethod(e.target.value)}
                     >
-                      <option>Manual · Health center</option>
                       <option>IoT dispensing machine · TY-DM-01</option>
+                      <option>Manual · Health center</option>
                     </select>
+                    <p
+                      className="sd-rx-header__sub"
+                      style={{ marginTop: 6, marginBottom: 0 }}
+                    >
+                      {method.includes("TY-DM-01")
+                        ? "Queues a DISPENSE command for motor 1."
+                        : "Records the transaction only."}
+                    </p>
                   </div>
                 </div>
 
@@ -759,7 +1004,7 @@ export default function ScanDispensePage() {
                 disabled={
                   submitting ||
                   !beneficiary ||
-                  !selectedRx ||
+                  !canDispense ||
                   !(parseInt(quantity, 10) > 0)
                 }
               >

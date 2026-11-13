@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { ArrowLeft, FileDown, Loader2 } from "lucide-react";
 import { useEndpoint } from "../../lib/useApi";
 import { downloadFile } from "../../lib/api";
-import { Loading, ErrorState } from "../../lib/ui";
+import { Loading, ErrorState, InlineNotice } from "../../lib/ui";
 import { getSession, roleKey } from "../auth/authStore";
 import { fmtDateTime } from "./apiFormat";
 import "../admin/DashboardPage.css";
@@ -20,9 +20,12 @@ function workspaceBase() {
 
 export default function DispensingReceiptPage() {
   const { id } = useParams();
+  const location = useLocation();
   const base = workspaceBase();
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
+  // Feedback handed over from the scan screen (e.g. machine command result).
+  const notice = location.state?.notice;
 
   // Real transaction receipt — id may be numeric or a code (TXN-2026-0001).
   const { data: transaction, isLoading, error, refetch } = useEndpoint(
@@ -112,6 +115,12 @@ export default function DispensingReceiptPage() {
         {transaction.quantity} of {transaction.medicine} were recorded for{" "}
         {transaction.beneficiary}.
       </div>
+
+      {notice ? (
+        <div style={{ marginBottom: 14 }}>
+          <InlineNotice kind={notice.kind}>{notice.message}</InlineNotice>
+        </div>
+      ) : null}
 
       {/* ---------- LAYOUT ---------- */}
       <div className="dr-layout">
