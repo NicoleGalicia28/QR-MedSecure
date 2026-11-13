@@ -740,7 +740,8 @@ export default function ScanDispensePage() {
                 <div className="sd-rx-recorded-note">
                   No structured prescription is on file. Select the recorded
                   prescription to release against — confirming will create a
-                  structured prescription from it.
+                  structured prescription from it. The quantity dispensed is
+                  one box (30 tablets, one month supply, once daily).
                 </div>
                 {recordedPrescriptions.map((r) => {
                   const isSelected =
