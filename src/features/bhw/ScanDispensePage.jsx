@@ -32,6 +32,10 @@ const STEPS = [
 
 const SCAN_WIDTH = 480;
 
+// When dispensing, the quantity is always one box (30 tablets = one month supply,
+// taken once daily). The BHW selects the medicine; the quantity is fixed.
+const FIXED_DISPENSE_QTY = 30;
+
 // The prototype only has motor 1 wired, so every machine release uses it.
 const DISPENSE_MOTOR_CHANNEL = 1;
 
@@ -61,7 +65,7 @@ function matchMedicine(text, medicines) {
 
 export default function ScanDispensePage() {
   const navigate = useNavigate();
-  const [quantity, setQuantity] = useState("");
+  const [quantity, setQuantity] = useState(String(FIXED_DISPENSE_QTY));
   const [method, setMethod] = useState("IoT dispensing machine · TY-DM-01");
 
   // Camera / scan state
@@ -162,14 +166,8 @@ export default function ScanDispensePage() {
     }
   }, [rxList.length, recordedPrescriptions.length, selectedRecordedId]);
 
-  // Prefill the quantity from the selected structured prescription. Only run
-  // when the selection changes so the BHW can clear and retype the value.
-  useEffect(() => {
-    if (selectedRx) {
-      setQuantity(String(selectedRx.remaining));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedRx?.id]);
+  // Quantity is always one box (30 tablets = one month supply, once daily).
+  // No need to pre-fill from the selected prescription.
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -843,12 +841,10 @@ export default function ScanDispensePage() {
                         </label>
                         <input
                           type="number"
-                          min="1"
-                          max={recordedMedicine.stock}
+                          min={FIXED_DISPENSE_QTY}
+                          max={FIXED_DISPENSE_QTY}
                           className="sd-rx-input"
-                          value={quantity}
-                          onChange={(e) => setQuantity(e.target.value)}
-                          placeholder="e.g. 30"
+                          value={FIXED_DISPENSE_QTY}
                         />
                       </div>
                       <div>
@@ -893,6 +889,14 @@ export default function ScanDispensePage() {
                     {rxList.map((p) => {
                       const isSelected =
                         String(p.id) === String(selectedRx?.id);
+                      // Extract medicine name and strength from the medicine string
+                      // e.g. "Losartan 50 mg" → name: "Losartan", strength: "50 mg"
+                      const medParts = p.medicine ? p.medicine.split(' ') : [];
+                      const medName = medParts.slice(0, -1).join(' ') || p.medicine;
+                      const medStrength = medParts.slice(-1)[0] || '';
+                      // Frequency is once daily for all medications in this system
+                      const frequency = 'Once daily';
+
                       return (
                         <tr
                           key={p.id}
@@ -910,9 +914,21 @@ export default function ScanDispensePage() {
                               aria-label={`Select ${p.medicine}`}
                             />
                           </td>
-                          <td className="sd-rx-table__med">{p.medicine}</td>
+                          <td className="sd-rx-table__med">
+                            <div>
+                              <strong>{medName}</strong>
+                              {medStrength && <span>· {medStrength}</span>}
+                            </div>
+                          </td>
                           <td>{p.code}</td>
-                          <td>{p.dosage || "—"}</td>
+                          <td>
+                            <div>
+                              <strong>Dosage:</strong> {p.dosage || "—"}
+                            </div>
+                            <div>
+                              <strong>Frequency:</strong> {frequency}
+                            </div>
+                          </td>
                           <td>{p.quantity}</td>
                           <td>{p.remaining}</td>
                           <td>{fmtDate(p.validUntil) || "—"}</td>
