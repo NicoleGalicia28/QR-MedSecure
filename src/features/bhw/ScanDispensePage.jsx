@@ -146,7 +146,9 @@ export default function ScanDispensePage() {
     ? matchMedicine(selectedRecorded.prescription, medicines)
     : null;
   // True when there is something valid to release (structured or recorded).
-  const canDispense = Boolean(selectedRx) || Boolean(selectedRecorded && recordedMedicine);
+  // For recorded prescriptions, enable as soon as one is selected; medicine
+  // matching is verified during handleConfirm.
+  const canDispense = Boolean(selectedRx) || Boolean(selectedRecorded);
 
   // Auto-select the first prescription once loaded.
   useEffect(() => {
@@ -165,6 +167,14 @@ export default function ScanDispensePage() {
       setSelectedRecordedId(String(recordedPrescriptions[0].id));
     }
   }, [rxList.length, recordedPrescriptions.length, selectedRecordedId]);
+
+  // Quantity is always one box (30 tablets = one month supply, once daily).
+  // Set it whenever a recorded prescription is selected.
+  useEffect(() => {
+    if (selectedRecorded) {
+      setQuantity(String(FIXED_DISPENSE_QTY));
+    }
+  }, [selectedRecorded]);
 
   // Quantity is always one box (30 tablets = one month supply, once daily).
   // No need to pre-fill from the selected prescription.
@@ -287,7 +297,7 @@ export default function ScanDispensePage() {
     setSelectedRxId("");
     setSelectedRecordedId("");
     setCreatedRxId(null);
-    setQuantity("");
+    setQuantity(String(FIXED_DISPENSE_QTY));
     setPhase("validating");
 
     const res = await sendApi("/qr/validate", { qrData: raw });
@@ -315,7 +325,7 @@ export default function ScanDispensePage() {
     setValidateError("");
     setSubmitNotice(null);
     setManualText("");
-    setQuantity("");
+    setQuantity(String(FIXED_DISPENSE_QTY));
     matchedRef.current = false;
     if (streamRef.current) {
       setPhase("scanning");
@@ -334,14 +344,8 @@ export default function ScanDispensePage() {
 
   const handleConfirm = async () => {
     if (submitting || !beneficiary) return;
-    const qty = parseInt(quantity, 10);
-    if (!qty || qty <= 0) {
-      setSubmitNotice({
-        kind: "error",
-        message: "Enter a quantity greater than 0.",
-      });
-      return;
-    }
+    // Quantity is always one box (30 tablets = one month supply, once daily).
+    const qty = FIXED_DISPENSE_QTY;
 
     // Resolve what to dispense. A structured prescription is preferred; when
     // only a recorded (free-text) prescription exists we create the structured
@@ -359,6 +363,15 @@ export default function ScanDispensePage() {
         return;
       }
       if (!recordedMedicine) {
+        // Inventory might still be loading or the text didn't match.
+        // Try to match now with the latest inventory data.
+        if (medicines.length === 0) {
+          setSubmitNotice({
+            kind: "error",
+            message: "Loading medicine inventory… please try again in a moment.",
+          });
+          return;
+        }
         setSubmitNotice({
           kind: "error",
           message: `Could not match "${selectedRecorded.prescription}" to Amlodipine, Metformin or Losartan. Issue a structured prescription first.`,
@@ -958,11 +971,11 @@ export default function ScanDispensePage() {
                     </label>
                     <input
                       type="number"
-                      min="1"
-                      max={selectedRx.remaining}
+                      min={FIXED_DISPENSE_QTY}
+                      max={FIXED_DISPENSE_QTY}
                       className="sd-rx-input"
-                      value={quantity}
-                      onChange={(e) => setQuantity(e.target.value)}
+                      value={FIXED_DISPENSE_QTY}
+                      readOnly
                     />
                   </div>
                   <div>
@@ -997,7 +1010,7 @@ export default function ScanDispensePage() {
                     </span>
                     <span className="sd-rx-field__value">
                       {Math.max(
-                        selectedRx.remaining - (parseInt(quantity, 10) || 0),
+                        selectedRx.remaining - FIXED_DISPENSE_QTY,
                         0
                       )}{" "}
                       units
@@ -1052,8 +1065,7 @@ export default function ScanDispensePage() {
                 disabled={
                   submitting ||
                   !beneficiary ||
-                  !canDispense ||
-                  !(parseInt(quantity, 10) > 0)
+                  !canDispense
                 }
               >
                 <Check size={15} strokeWidth={2.5} />
