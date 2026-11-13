@@ -688,13 +688,7 @@ export default function ScanDispensePage() {
                     className="sd-btn sd-btn--primary"
                     style={{ flex: 1 }}
                     disabled={!canDispense || submitting}
-                    onClick={() => {
-                      // Move the BHW to the review/confirm step.
-                      document
-                        .querySelector(".sd-rx-panel")
-                        ?.scrollIntoView({ behavior: "smooth", block: "start" });
-                      document.querySelector(".sd-rx-input")?.focus();
-                    }}
+                    onClick={handleConfirm}
                   >
                     Dispense medicine
                   </button>
