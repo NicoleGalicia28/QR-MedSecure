@@ -897,6 +897,12 @@ export default function ScanDispensePage() {
                       const medStrength = medParts.slice(-1)[0] || '';
                       // Frequency is once daily for all medications in this system
                       const frequency = 'Once daily';
+                      // Duration is derived from quantity (30 tablets = 1 month supply)
+                      const duration = `${p.quantity} tablets (one month supply)`;
+                      // Instruction based on dosage and frequency
+                      const instruction = p.dosage
+                        ? `${p.dosage} ${frequency}`
+                        : `${frequency} as prescribed`;
 
                       return (
                         <tr
@@ -920,16 +926,20 @@ export default function ScanDispensePage() {
                               <strong>{medName}</strong>
                               {medStrength && <span>· {medStrength}</span>}
                             </div>
-                          </td>
-                          <td>{p.code}</td>
-                          <td>
                             <div>
                               <strong>Dosage:</strong> {p.dosage || "—"}
                             </div>
                             <div>
                               <strong>Frequency:</strong> {frequency}
                             </div>
+                            <div>
+                              <strong>Duration:</strong> {duration}
+                            </div>
+                            <div>
+                              <strong>Instruction:</strong> {instruction}
+                            </div>
                           </td>
+                          <td>{p.code}</td>
                           <td>{p.quantity}</td>
                           <td>{p.remaining}</td>
                           <td>{fmtDate(p.validUntil) || "—"}</td>
