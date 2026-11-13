@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Download, Plus } from "lucide-react";
+import { Download, Plus, RefreshCw, Send, Wrench } from "lucide-react";
 import { useEndpoint } from "../../lib/useApi";
 import { Loading, ErrorState, EmptyState } from "../../lib/ui";
 import { fmtDate } from "./apiFormat";
+import { iotApi, IOT_CONFIGURED, IOT_MACHINE_ID } from "../../lib/iotApi";
 import "../admin/DashboardPage.css";
 import "./MedicineInventory.css";
 
@@ -17,6 +18,8 @@ function statusOf(item) {
 export default function MedicineInventoryPage() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
+  const [iotCmd, setIotCmd] = useState({ sending: false, message: null });
+  const [refillQty, setRefillQty] = useState({});
 
   const { data: items, isLoading, error, refetch } = useEndpoint(
     "/inventory",
@@ -41,6 +44,34 @@ export default function MedicineInventoryPage() {
       (filter === "expiry" && s === "expiry");
     return matchesSearch && matchesFilter;
   });
+
+  const sendIotCommand = useCallback(async ({ type, label = "", medicine_inventory_id, quantity_added }) => {
+    setIotCmd({ sending: true, message: null });
+    try {
+      if (type === "REFILL" && medicine_inventory_id && quantity_added) {
+        const res = await iotApi.refill({ medicine_inventory_id, quantity_added });
+        const id = res?.data?.id ?? res?.id ?? "?";
+        setIotCmd({
+          sending: false,
+          message: `Refill queued #${id} — ${quantity_added} units${label ? ` · ${label}` : ""}`,
+        });
+      } else {
+        const res = await iotApi.sendCommand({
+          machine_id: IOT_MACHINE_ID,
+          command_type: type,
+          motor_channel: 1,
+          parameters: "",
+        });
+        const id = res?.data?.id ?? res?.command_id ?? "?";
+        setIotCmd({
+          sending: false,
+          message: `Queued command #${id} — ${type}${label ? ` · ${label}` : ""} (motor 1)`,
+        });
+      }
+    } catch (e) {
+      setIotCmd({ sending: false, message: `Error: ${e.message}` });
+    }
+  }, []);
 
   return (
     <>
@@ -130,11 +161,13 @@ export default function MedicineInventoryPage() {
                     <th>Unit</th>
                     <th>Expiry</th>
                     <th>Status</th>
+                    <th>IoT Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filtered.map((m) => {
                     const s = statusOf(m);
+                    const isEmpty = Number(m.stock) <= 0;
                     return (
                       <tr key={m.id}>
                         <td className="inv-table__name">{m.name}</td>
@@ -148,6 +181,45 @@ export default function MedicineInventoryPage() {
                           <span className={"inv-pill " + (s === "low" ? "inv-pill--low" : s === "expiry" ? "inv-pill--out" : "inv-pill--ok")}>
                             {s === "low" ? "Low stock" : s === "expiry" ? "Expiry review" : "Available"}
                           </span>
+                        </td>
+                        <td>
+                          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                            {/* Refill button - always available */}
+                            <button
+                              type="button"
+                              className="inv-iot-btn inv-iot-btn--refill"
+                              onClick={() => {
+                                const qty = refillQty[m.id] || 30;
+                                sendIotCommand({
+                                  type: "REFILL",
+                                  label: `${m.name} · ${m.slot}`,
+                                  medicine_inventory_id: m.id,
+                                  quantity_added: qty,
+                                });
+                              }}
+                              disabled={iotCmd.sending || !IOT_CONFIGURED}
+                              title="Refill medicine via IoT"
+                            >
+                              <RefreshCw size={12} /> Refill
+                            </button>
+                            {/* Calibrate button - shown when medicine is empty */}
+                            {isEmpty && (
+                              <button
+                                type="button"
+                                className="inv-iot-btn inv-iot-btn--calibrate"
+                                onClick={() =>
+                                  sendIotCommand({
+                                    type: "CALIBRATE",
+                                    label: `${m.name} · ${m.slot}`,
+                                  })
+                                }
+                                disabled={iotCmd.sending || !IOT_CONFIGURED}
+                                title="Calibrate dispenser when medicine is empty"
+                              >
+                                <Wrench size={12} /> Calibrate
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     );
@@ -164,6 +236,20 @@ export default function MedicineInventoryPage() {
           <Link to="/bhw/restock" className="restock-submit" style={{ textDecoration: "none", display: "inline-flex" }}>
             <Plus size={14} strokeWidth={2.5} /> Record restock
           </Link>
+
+          {/* IoT command feedback */}
+          {iotCmd.message ? (
+            <div className={`inv-iot-msg ${iotCmd.message.startsWith("Error") ? "inv-iot-msg--error" : "inv-iot-msg--ok"}`}>
+              {iotCmd.message}
+            </div>
+          ) : null}
+
+          {/* IoT status */}
+          {!IOT_CONFIGURED ? (
+            <div className="inv-iot-warning">
+              <strong>IoT API not configured.</strong> Set VITE_IOT_API_URL and VITE_IOT_API_KEY in .env to enable Refill/Calibrate commands.
+            </div>
+          ) : null}
         </div>
       </div>
 
