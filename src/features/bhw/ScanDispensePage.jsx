@@ -81,6 +81,9 @@ export default function ScanDispensePage() {
   // Prescription created from a recorded one, reused if the transaction is
   // retried so we never create duplicates.
   const [createdRxId, setCreatedRxId] = useState(null);
+  // Tracks whether the beneficiary has already dispensed in the current monthly cycle.
+  // Populated after a successful dispatch so the UI can show anti-fraud messaging.
+  const [alreadyDispensedThisCycle, setAlreadyDispensedThisCycle] = useState(false);
 
   // Dispensing submission
   const [submitting, setSubmitting] = useState(false);
@@ -271,6 +274,17 @@ export default function ScanDispensePage() {
     stopDecoding();
     setValidateError("");
     setSubmitNotice(null);
+    // If the beneficiary has already dispensed in this monthly cycle, reject
+    // the scan with a clear anti-fraud message rather than re-entering the
+    // dispensing flow.
+    if (alreadyDispensedThisCycle) {
+      setPhase("error");
+      setValidateError(
+        "You have already dispensed medicine this monthly cycle. " +
+          "Dispensing is available again next month."
+      );
+      return;
+    }
     setBeneficiary(null);
     setSelectedRxId("");
     setSelectedRecordedId("");
@@ -421,6 +435,8 @@ export default function ScanDispensePage() {
           };
         }
       }
+
+      setAlreadyDispensedThisCycle(true);
 
       const transaction = res.data?.transaction;
       if (transaction?.id != null) {
@@ -649,6 +665,11 @@ export default function ScanDispensePage() {
                 <span className="sd-beneficiary__pill">
                   • Verified beneficiary
                 </span>
+                {alreadyDispensedThisCycle && (
+                  <div className="sd-anti-fraud-notice">
+                    <strong>Anti-fraud:</strong> You have already dispensed medicine this monthly cycle. Dispensing is available again next month.
+                  </div>
+                )}
 
                 <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
                   <button
