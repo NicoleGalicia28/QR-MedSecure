@@ -157,7 +157,6 @@ export default function MedicineInventoryPage() {
                 <tbody>
                   {filtered.map((m) => {
                     const s = statusOf(m);
-                    const isEmpty = Number(m.stock) <= 0;
                     return (
                       <tr key={m.id}>
                         <td className="inv-table__name">{m.name}</td>
@@ -189,23 +188,21 @@ export default function MedicineInventoryPage() {
                             >
                               <RefreshCw size={12} /> Refill
                             </button>
-                            {/* Calibrate button - shown when medicine is empty */}
-                            {isEmpty && (
-                              <button
-                                type="button"
-                                className="inv-iot-btn inv-iot-btn--calibrate"
-                                onClick={() =>
-                                  sendIotCommand({
-                                    type: "CALIBRATE",
-                                    label: `${m.name} · ${m.slot}`,
-                                  })
-                                }
-                                disabled={iotCmd.sending || !IOT_CONFIGURED}
-                                title="Calibrate dispenser when medicine is empty"
-                              >
-                                <Wrench size={12} /> Calibrate
-                              </button>
-                            )}
+                            {/* Calibrate button - available for each medicine */}
+                            <button
+                              type="button"
+                              className="inv-iot-btn inv-iot-btn--calibrate"
+                              onClick={() =>
+                                sendIotCommand({
+                                  type: "CALIBRATE",
+                                  label: `${m.name} · ${m.slot}`,
+                                })
+                              }
+                              disabled={iotCmd.sending || !IOT_CONFIGURED}
+                              title="Calibrate dispenser for this medicine"
+                            >
+                              <Wrench size={12} /> Calibrate
+                            </button>
                           </div>
                         </td>
                       </tr>
