@@ -1086,6 +1086,21 @@ export default function ScanDispensePage() {
               Confirmation records staff, prescription, quantity and time. It
               does not authorize a new prescription.
             </p>
+            {/* Prominent dispense button in the review panel */}
+            {beneficiary && canDispense && (
+              <div style={{ marginTop: 12 }}>
+                <button
+                  type="button"
+                  className="sd-btn sd-btn--primary"
+                  style={{ width: "100%" }}
+                  onClick={handleConfirm}
+                  disabled={submitting}
+                >
+                  <Check size={15} strokeWidth={2.5} />
+                  {submitting ? "Recording…" : "Dispense medicine"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
