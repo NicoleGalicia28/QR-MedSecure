@@ -513,7 +513,8 @@ export default function ScanDispensePage() {
         <strong>Live webcam scanning</strong>
         QR codes are decoded on-device with your webcam or device camera and
         verified against the server. Each QR code is single-use; a used or
-        tampered code is rejected.
+        tampered code is rejected. Only system-issued AES-encrypted QR codes
+        are accepted.
       </div>
 
       {/* ---------- LAYOUT ---------- */}
@@ -601,7 +602,7 @@ export default function ScanDispensePage() {
                 <input
                   type="text"
                   className="sd-manual__input"
-                  placeholder='{"iv":…,"data":…}'
+                  placeholder='{"v":1,"alg":"aes-256-gcm","iv":"…","ct":"…","tag":"…"}'
                   value={manualText}
                   onChange={(e) => setManualText(e.target.value)}
                 />

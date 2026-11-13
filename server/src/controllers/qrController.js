@@ -35,9 +35,10 @@ export async function issue(req, res) {
     expiresAt,
   });
 
-  // Store beneficiary ID directly in QR payload for easy scanning
+  // Store beneficiary ID in AES-encrypted QR payload for tamper detection
   const payload = { v: 1, type: "beneficiary", bid: beneficiary.publicId, beneficiaryId: beneficiary.publicId };
-  const text = JSON.stringify(payload);
+  const encrypted = encryptJSON(payload);
+  const text = JSON.stringify(encrypted);
   const QRCode = (await import("qrcode")).default;
   const dataUrl = await QRCode.toDataURL(text, { width: 280, margin: 1 });
 
@@ -52,18 +53,14 @@ export async function validate(req, res) {
   let payload;
   try {
     const parsed = typeof qrData === "string" ? JSON.parse(qrData) : qrData;
-    // Support both new format (plain beneficiary ID) and legacy encrypted format
-    if (parsed?.type === "beneficiary" && (parsed.bid || parsed.beneficiaryId)) {
-      payload = { bid: parsed.bid || parsed.beneficiaryId };
-    } else {
-      payload = decryptJSON(parsed);
-    }
+    // Only accept AES-256-GCM encrypted payloads — plain JSON is rejected as tampered
+    payload = decryptJSON(parsed);
   } catch {
-    return res.status(400).json({ valid: false, reason: "invalid", error: "Malformed or tampered QR payload." });
+    return res.status(400).json({ valid: false, reason: "tampered", error: "Malformed or tampered QR payload. Only system-issued AES-encrypted QR codes are accepted." });
   }
 
   const beneficiaryId = payload?.bid || payload?.beneficiaryId || payload?.tid;
-  if (!beneficiaryId) return res.status(400).json({ valid: false, reason: "invalid" });
+  if (!beneficiaryId) return res.status(400).json({ valid: false, reason: "invalid", error: "Invalid QR payload structure." });
 
   // Try to find by publicId first (new format)
   let beneficiary = await Beneficiary.findOne({ where: { publicId: beneficiaryId } });
